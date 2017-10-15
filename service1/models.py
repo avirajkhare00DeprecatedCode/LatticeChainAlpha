@@ -40,6 +40,7 @@ class CryptoCoins(models.Model):
     belongs_to = models.ForeignKey(CryptoBasket, null=True, blank=True)
     coin_name = models.CharField(max_length=100)
     coin_id = models.CharField(max_length=10, null=True, blank=True)
+    allocation_percent = models.CharField(max_length=10, null=True, blank=True)
 
     def __unicode__(self):
 
@@ -51,6 +52,7 @@ class ERC20Tokens(models.Model):
     token_name = models.CharField(max_length=100)
     token_id = models.CharField(max_length=100, null=True, blank=True)
     decimals = models.CharField(max_length=50, null=True, blank=True)
+    allocation_percent = models.CharField(max_length=10, null=True, blank=True)
 
     def __unicode__(self):
 

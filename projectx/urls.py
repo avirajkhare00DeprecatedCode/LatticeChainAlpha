@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from service1.views import SignupView
+from service1.views import SignupView, GetTickerView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^signup/$', SignupView.as_view(), name='signup_view')
+    url(r'^signup/$', SignupView.as_view(), name='signup_view'),
+    url(r'get_ticker/$', GetTickerView.as_view(), name='get_ticker_view')
 ]

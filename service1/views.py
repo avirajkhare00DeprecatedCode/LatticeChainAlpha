@@ -6,9 +6,25 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from service1.core.get_wallet_ids import generate_keys
+from service1.core.parse_ticker import get_current_price
 
 from service1.models import User
-from service1.models import UserDetails
+from service1.models import UserDetails, CryptoCoins, ERC20Tokens
+
+class GetTickerView(APIView):
+
+    def get(self, request):
+
+        if CryptoCoins.objects.filter(coin_id=request.GET['coin_id']).exists():
+
+            return HttpResponse(get_current_price(CryptoCoins.objects.get(coin_id=request.GET['coin_id']).ticker_api, 'coin', request.GET['coin_id']))
+
+        if ERC20Tokens.objects.filter(token_id=request.GET['coin_id']).exists():
+
+            return HttpResponse(ERC20Tokens.objects.get(token_id=request.GET['coin_id']).ticker_api, 'erc20', request.GET['coin_id'])
+
+
+
 
 class SignupView(APIView):
 

@@ -8,7 +8,7 @@ from rest_framework import status
 from service1.core.get_wallet_ids import generate_keys
 
 from service1.models import User
-from service1.models import UserExtendDetails
+from service1.models import UserDetails
 
 class SignupView(APIView):
 
@@ -30,7 +30,7 @@ class SignupView(APIView):
 
         print new_keys
 
-        new_user = UserExtendDetails()
+        new_user = UserDetails()
 
         new_user.userid = User.objects.get(username=request.POST['username'])
 

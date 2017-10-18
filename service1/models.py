@@ -78,7 +78,8 @@ class TransactionData(models.Model):
 
     user_id = models.CharField(max_length=50)
     created = models.DateTimeField(auto_now=True)
-    json_data = JSONField(null=True, blank=True)
+    json_data_current = JSONField(null=True, blank=True)
+    json_data_old = JSONField(null=True, blank=True)
 
     def __unicode__(self):
 

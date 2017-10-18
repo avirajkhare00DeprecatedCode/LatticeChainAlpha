@@ -15,10 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from service1.views import SignupView, GetTickerView
+from service1.views import SignupView, GetTickerView, CreateFakeTxn
+from front_end.views import IndexView, LoginView, LogoutView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^signup/$', SignupView.as_view(), name='signup_view'),
-    url(r'get_ticker/$', GetTickerView.as_view(), name='get_ticker_view')
+    url(r'^get_ticker/$', GetTickerView.as_view(), name='get_ticker_view'),
+    url(r'^create_fake_txn/$', CreateFakeTxn.as_view(), name='create_fake_txn'),
+    url(r'^$', IndexView.as_view(), name='index_page'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), name='logout')
 ]

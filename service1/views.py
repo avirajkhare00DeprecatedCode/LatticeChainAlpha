@@ -9,7 +9,7 @@ from service1.core.get_wallet_ids import generate_keys
 from service1.core.parse_ticker import get_current_price
 
 from service1.models import User
-from service1.models import UserDetails, CryptoCoins, ERC20Tokens
+from service1.models import UserDetails, CryptoCoins, ERC20Tokens, TransactionData
 
 class GetTickerView(APIView):
 
@@ -24,6 +24,21 @@ class GetTickerView(APIView):
             return HttpResponse(ERC20Tokens.objects.get(token_id=request.GET['coin_id']).ticker_api, 'erc20', request.GET['coin_id'])
 
 
+class CreateFakeTxn(APIView):
+
+    def get(self, request):
+
+        return HttpResponse('only post shit!')
+
+    def post(self, request):
+
+        #will add backend validation and logic later
+
+        new_transaction = TransactionData()
+        new_transaction.json_data_current = request.POST['txn_data']
+        new_transaction.save()
+
+        return HttpResponse(200)
 
 
 class SignupView(APIView):

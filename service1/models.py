@@ -17,6 +17,7 @@ class UserDetails(models.Model):
 
 class CryptoBasket(models.Model):
 
+    user_id = models.OneToOneField(User)
     basket_id = models.CharField(max_length=100)
     basket_name = models.CharField(max_length=100)
     basket_info = models.TextField(null=True, blank=True)

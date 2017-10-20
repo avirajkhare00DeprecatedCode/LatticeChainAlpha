@@ -1,0 +1,58 @@
+{% extends 'html/dashboard.html' %}
+{% block dashboard %}
+{% load staticfiles %}
+
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <div class="panel panel-default">
+        <div class="modal"></div>
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Your Baskets</h4>
+                </div>
+                <div class="col-md-7"></div>
+                <div class="col-md-2">
+                    <button id='add_new_basket' type="button" class="btn btn-success">New Basket</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <p>...</p>
+        </div>
+
+        <!-- Table -->
+        <table class="table">
+            ...
+        </table>
+    </div>
+
+    <div id="default_dialog" title="Available Baskets" hidden>
+        <p>
+            Please click to select one of our hand picked basket or create your new basket.
+        </p>
+            <ul class="list-group">
+                <li class="list-group-item">Basket 1</li>
+                <li class="list-group-item">Basket 2</li>
+                <li class="list-group-item">Basket 3</li>
+            </ul>
+    </div>
+
+    <script>
+        $('#add_new_basket').click(function(){
+            console.log("It is getting clicked!")
+            $('#default_dialog').dialog({
+                width : 600,
+                height : 400,
+                buttons : {
+                    'Create Basket' : function(){
+                        console.log("Create Basket button is clicked!")
+                    }
+                }
+            })
+        });
+    </script>
+
+{% endblock %}

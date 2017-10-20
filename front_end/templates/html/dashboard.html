@@ -1,0 +1,42 @@
+{% extends 'html/base.html' %}
+{% block content %}
+{% load staticfiles %}
+
+    <!-- Page Content -->
+    <div class="container">
+
+    <div class="row">
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+
+            <div class="dashboard-navbar-main">
+
+                <ul class="nav nav-pills nav-justified">
+                    <li><a href="#">Summary</a></li>
+                    <li><a id='show_baskets' href="#">Baskets</a></li>
+                    <li><a href="#">Balance</a></li>
+                    <li><a href="#">Activity</a></li>
+                </ul>
+
+            </div>
+            <div class="info-area">
+                {% block dashboard %}
+                {% endblock %}
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+
+    </div>
+
+    <!-- /.container -->
+
+    <script>
+        $('#show_baskets').click(function(){
+            console.log("This click is working!")
+            window.location.href = '../dashboard/baskets/'
+        })
+    </script>
+
+    {% endblock %}

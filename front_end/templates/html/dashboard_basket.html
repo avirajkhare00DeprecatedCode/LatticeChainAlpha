@@ -1,139 +1,325 @@
-{% extends 'html/dashboard.html' %}
-{% block dashboard %}
-{% load staticfiles %}
+{% extends 'html/dashboard.html' %} {% block dashboard %} {% load staticfiles %}
 
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-    <div class="panel panel-default">
-        <div class="modal"></div>
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-md-3">
-                    <h4>Your Baskets</h4>
-                </div>
-                <div class="col-md-7"></div>
-                <div class="col-md-2">
-                    <button id='add_new_basket' type="button" class="btn btn-success">New Basket</button>
-                </div>
+<div class="panel panel-default">
+    <div class="modal"></div>
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>Your Baskets</h4>
+            </div>
+            <div class="col-md-7"></div>
+            <div class="col-md-2">
+                <button id='add_new_basket' type="button" class="btn btn-success">New Basket</button>
             </div>
         </div>
-        <div class="panel-body">
-            <p>To add new basket, click on New Basket.</p>
+    </div>
+    <div class="panel-body">
+        <p>To add new basket, click on New Basket.</p>
+    </div>
+
+    <!-- Table -->
+    <table id="user_basket_table" class="table">
+        <tr>
+            <th>Basket Name</th>
+            <th>Price</th>
+        </tr>
+    </table>
+</div>
+
+<div id="default_dialog" title="Available Baskets" hidden>
+    <p>
+        Please click to select one of our hand picked basket or create your new basket.
+    </p>
+    <ul id="default_dialog_list" class="list-group"></ul>
+</div>
+
+<div id="new_basket_allocation_dialog" title="Create New Basket" hidden>
+    <ul id="new_basket_allocation_list" class="list-group">
+    </ul>
+    <div class="new_coin_area_list">
+            <button id="select_new_coin" class="btn btn-primary btn-lg btn-block" type="button">Select Coin</button>
         </div>
+</div>
 
-        <!-- Table -->
-        <table id="user_basket_table" class="table">
-            <tr>
-                <th>Basket Name</th>
-                <th>Price</th>
-            </tr>
-        </table>
-    </div>
+    <!-- Below is code for coins -->
 
-    <div id="default_dialog" title="Available Baskets" hidden>
-        <p>
-            Please click to select one of our hand picked basket or create your new basket.
-        </p>
-            <ul id="default_dialog_list" class="list-group"></ul>
-    </div>
-
-    <div id="new_basket_allocation_dialog" title="Create New Basket" hidden>
-        <ul class="list-group">
-                <div class="new_coin_area">
-                    <div class="row">
-                        <div class="col-md-10">
-                            Coin Name
-                        </div>
-                        <div class="col-md-2">
-                            <input class="form-control" placeholder="%" />
-                        </div>
+    <div id="new_coin_box" hidden>
+        <div class="coin_info">
+            Big Cap Market Coins
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <a id="btc" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png">
+                    <div class="caption">
+                        Bitcoin
                     </div>
-                </div>
-                <hr />
-                <div class="new_coin_area">
-                    <div class="row">
-                        <div class="col-md-10">
-                            Coin Name
-                        </div>
-                        <div class="col-md-2">
-                            <input class="form-control" placeholder="%" />
-                        </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="eth" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/ethereum.png">
+                    <div class="caption">
+                        Ethereum
                     </div>
-                </div>
-        </ul>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="xrp" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/ripple.png">
+                    <div class="caption">
+                        Ripple
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="ltc" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/litecoin.png">
+                    <div class="caption">
+                        Litecoin
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="dash" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/dash.png">
+                    <div class="caption">
+                        Dash
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="bcc" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin-cash.png">
+                    <div class="caption">
+                        Bitcoin Cash
+                    </div>
+                </a>
+            </div>
+        </div>
+        <hr />
+        <div class="coin_info">
+            Mid Cap Market Coins
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <a id="xem" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/nem.png">
+                    <div class="caption">
+                        NEM
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="xmr" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/monero.png">
+                    <div class="caption">
+                        Monero
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="neo" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/neo.png">
+                    <div class="caption">
+                        NEO
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="etc" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/ethereum-classic.png">
+                    <div class="caption">
+                        ETC
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="iota" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/iota.png">
+                    <div class="caption">
+                        IOTA
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="bitconnect" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/bitconnect.png">
+                    <div class="caption">
+                        BitConnect
+                    </div>
+                </a>
+            </div>
+        </div>
+        <hr />
+        <div class="coin_info">
+            Emerging Cap Market Coins
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <a id="lsk" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/lisk.png">
+                    <div class="caption">
+                        Lisk
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="omg" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/omisego.png">
+                    <div class="caption">
+                        OmiseGo
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="cvc" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/civic.png">
+                    <div class="caption">
+                        Civic
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="qtum" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/qtum.png">
+                    <div class="caption">
+                        QTUM
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="vtc" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/vertcoin.png">
+                    <div class="caption">
+                        Vertcoin
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-2">
+                <a id="strat" href="#" class="thumbnail">
+                    <img src="https://files.coinmarketcap.com/static/img/coins/32x32/stratis.png">
+                    <div class="caption">
+                        Stratis
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
 
-    <script>
-        var csrf_token = "{% csrf_token %}";
+<!-- Code for coins dialog end -->
 
-        $.get('../../api/v1/fetch_submit_baskets/', function(data){
-                for(var i=0; i<data.length; i++){
-                    $('#user_basket_table').append(
-                    '<tr><td>' + data[i].basket_name + '</td></tr>'
+<script>
+    var csrf_token = "{% csrf_token %}";
+
+    $.get('../../api/v1/fetch_submit_baskets/', function (data) {
+        for (var i = 0; i < data.length; i++) {
+            $('#user_basket_table').append(
+                '<tr><td>' + data[i].basket_name + '</td></tr>'
+            )
+        }
+    })
+
+    $('#add_new_basket').click(function () {
+        console.log("It is getting clicked!")
+        //do the api call shit here and then inside success call dialog
+        $.get('../../api/v1/fetch_pre_baskets/', function (data) {
+            $('#default_dialog_list').empty();
+            for (var i = 0; i < data.length; i++) {
+                console.log(data[i].basket_name)
+                $('#default_dialog_list').append(
+                    '<div basket_id="' + data[i].basket_id + '"' + 'class="basket-dialog list-group-item">\n' +
+                    '<a href="#">\n' +
+                    '<div class="basket-name-dialog">\n' + data[i].basket_name + '</div>\n' +
+                    '</a>\n' +
+                    '<div class="basket-info-dialog">' + data[i].basket_info + '</div>\n' +
+                    '</div>\n' +
+                    '<hr />\n'
                 )
-                }
-            })
+            }
 
-        $('#add_new_basket').click(function(){
-            console.log("It is getting clicked!")
-            //do the api call shit here and then inside success call dialog
-            $.get('../../api/v1/fetch_pre_baskets/', function(data){
-                $('#default_dialog_list').empty();
-                for(var i=0; i<data.length; i++){
-                    console.log(data[i].basket_name)
-                    $('#default_dialog_list').append(
-                        '<div basket_id="' + data[i].basket_id + '"' +  'class="basket-dialog list-group-item">\n' +
-                            '<a href="#">\n' +
-                            '<div class="basket-name-dialog">\n' + data[i].basket_name + '</div>\n' +
-                            '</a>\n' +
-                            '<div class="basket-info-dialog">' + data[i].basket_info + '</div>\n' +
-                        '</div>\n' +
-                        '<hr />\n'
-                    )
-                }
-
-                $('#default_dialog').dialog({
-                width : 600,
-                height : 400,
-                buttons : {
-                    'Create Basket' : function(){
-                        console.log("Create Basket button is clicked!")
+            $('#default_dialog').dialog({
+                width: 600,
+                height: 400,
+                buttons: {
+                    'Create Basket': function () {
+                        console.log("Create Basket button is clicked!");
+                        $('#default_dialog').dialog('close');
+                        $('#new_basket_allocation_list').empty();
+                        //$.get('')
                         $('#new_basket_allocation_dialog').dialog({
-                            width : 700,
-                            height : 400,
-                            buttons : {
-                                'Confirm' : function(){
+                            width: 700,
+                            height: 400,
+                            buttons: {
+                                'Confirm': function () {
                                     console.log("Confirm is clicked, now close the dialog and send data to backend, then reload the page using jquery")
                                 }
                             }
                         })
                     }
                 }
-                })
-
             })
 
-            //get basket id and add to user, confirm box later.
-            $('#default_dialog_list').click(function(e){
-                console.log(e.target.parentNode.parentNode)
-                console.log($(e.target.parentNode.parentNode).attr('basket_id'));
-                var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
-                //make ajax call, close the dialog box and put data inside table
-                $.ajax({
-                    url : '../../api/v1/fetch_submit_baskets/',
-                    method : 'post',
-                    data : {
-                        csrfmiddlewaretoken : $(csrf_token).attr('value'),
-                        selected_basket_id : selected_basket_id_var
+        })
+
+        //get basket id and add to user, confirm box later.
+        $('#default_dialog_list').click(function (e) {
+            console.log(e.target.parentNode.parentNode)
+            console.log($(e.target.parentNode.parentNode).attr('basket_id'));
+            var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
+            //make ajax call, close the dialog box and put data inside table
+            $.ajax({
+                url: '../../api/v1/fetch_submit_baskets/',
+                method: 'post',
+                data: {
+                    csrfmiddlewaretoken: $(csrf_token).attr('value'),
+                    selected_basket_id: selected_basket_id_var
+                }
+            }).done(function (data) {
+                console.log(data);
+                window.location.reload();
+            })
+        });
+
+        $('#select_new_coin').click(function(){
+            $('#new_coin_box').dialog({
+                width : 790,
+                height : 400,
+                buttons : {
+                    'Close' : function(){
+                        //we will use this function to close this dialog!
                     }
-                }).done(function(data){
-                    console.log(data);
-                    window.location.reload();
-                })
+                }
             });
         });
-    </script>
+
+        //click event if any coin is selected
+        $('#new_coin_box').click(function(e){
+            //console.log(e.target);
+            //console.log($.trim($(e.target).text()));
+
+            $('#new_basket_allocation_list').append(
+                '<div class="new_coin_area">\n' +
+                    '<div class="row">\n' +
+                        '<div class="col-md-10">\n' +
+                            $.trim($(e.target).text()) +
+                        '</div>\n' +
+                        '<div class="col-md-2">\n' +
+                            '<input class="form-control" placeholder="%" />\n' +
+                        '</div>\n' +
+                    '</div>\n' +
+                '</div>\n' +
+                '<hr />\n'
+            )
+
+            $('#new_coin_box').dialog('close');
+
+        });
+    });
+</script>
 
 {% endblock %}

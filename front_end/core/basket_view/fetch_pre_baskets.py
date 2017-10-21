@@ -5,17 +5,17 @@ class FetchPreBaskets():
 
     def __init__(self):
 
-        baskets = []
+        self.baskets = []
 
 
     def return_pre_baskets(self):
 
-        for basket in CryptoBasket.objects.filter(user_id='admin'):
+        for basket in CryptoBasket.objects.filter(user_id__username='admin'):
 
-            baskets.append({
+            self.baskets.append({
                 'basket_id' : basket.basket_id,
                 'basket_name' : basket.basket_name,
                 'basket_info' : basket.basket_info
             })
 
-        return baskets
+        return self.baskets

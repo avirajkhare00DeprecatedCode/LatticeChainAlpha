@@ -17,7 +17,7 @@ class UserDetails(models.Model):
 
 class CryptoBasket(models.Model):
 
-    user_id = models.OneToOneField(User)
+    user_id = models.ForeignKey(User)
     basket_id = models.CharField(max_length=100)
     basket_name = models.CharField(max_length=100)
     basket_info = models.TextField(null=True, blank=True)
@@ -26,8 +26,18 @@ class CryptoBasket(models.Model):
 
         return self.basket_name
 
+class CryptoBasketUserMapping(models.Model):
+
+    user_id = models.ForeignKey(User, default=1)
+    crypto_basket = models.ForeignKey(CryptoBasket, unique=True)
+
+    def __unicode__(self):
+
+        return self.user_id.username
+
 class UserDefinedBasket(models.Model):
 
+    user_id = models.ForeignKey(User)
     basket_id = models.CharField(max_length=100)
     basket_name = models.CharField(max_length=100)
     coin_id = models.CharField(max_length=10)

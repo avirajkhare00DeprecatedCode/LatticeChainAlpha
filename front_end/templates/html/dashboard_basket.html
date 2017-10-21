@@ -20,12 +20,15 @@
             </div>
         </div>
         <div class="panel-body">
-            <p>...</p>
+            <p>To add new basket, click on New Basket.</p>
         </div>
 
         <!-- Table -->
-        <table class="table">
-            ...
+        <table id="user_basket_table" class="table">
+            <tr>
+                <th>Basket Name</th>
+                <th>Price</th>
+            </tr>
         </table>
     </div>
 
@@ -33,25 +36,103 @@
         <p>
             Please click to select one of our hand picked basket or create your new basket.
         </p>
-            <ul class="list-group">
-                <li class="list-group-item">Basket 1</li>
-                <li class="list-group-item">Basket 2</li>
-                <li class="list-group-item">Basket 3</li>
-            </ul>
+            <ul id="default_dialog_list" class="list-group"></ul>
+    </div>
+
+    <div id="new_basket_allocation_dialog" title="Create New Basket" hidden>
+        <ul class="list-group">
+                <div class="new_coin_area">
+                    <div class="row">
+                        <div class="col-md-10">
+                            Coin Name
+                        </div>
+                        <div class="col-md-2">
+                            <input class="form-control" placeholder="%" />
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="new_coin_area">
+                    <div class="row">
+                        <div class="col-md-10">
+                            Coin Name
+                        </div>
+                        <div class="col-md-2">
+                            <input class="form-control" placeholder="%" />
+                        </div>
+                    </div>
+                </div>
+        </ul>
     </div>
 
     <script>
+        var csrf_token = "{% csrf_token %}";
+
+        $.get('../../api/v1/fetch_submit_baskets/', function(data){
+                for(var i=0; i<data.length; i++){
+                    $('#user_basket_table').append(
+                    '<tr><td>' + data[i].basket_name + '</td></tr>'
+                )
+                }
+            })
+
         $('#add_new_basket').click(function(){
             console.log("It is getting clicked!")
-            $('#default_dialog').dialog({
+            //do the api call shit here and then inside success call dialog
+            $.get('../../api/v1/fetch_pre_baskets/', function(data){
+                $('#default_dialog_list').empty();
+                for(var i=0; i<data.length; i++){
+                    console.log(data[i].basket_name)
+                    $('#default_dialog_list').append(
+                        '<div basket_id="' + data[i].basket_id + '"' +  'class="basket-dialog list-group-item">\n' +
+                            '<a href="#">\n' +
+                            '<div class="basket-name-dialog">\n' + data[i].basket_name + '</div>\n' +
+                            '</a>\n' +
+                            '<div class="basket-info-dialog">' + data[i].basket_info + '</div>\n' +
+                        '</div>\n' +
+                        '<hr />\n'
+                    )
+                }
+
+                $('#default_dialog').dialog({
                 width : 600,
                 height : 400,
                 buttons : {
                     'Create Basket' : function(){
                         console.log("Create Basket button is clicked!")
+                        $('#new_basket_allocation_dialog').dialog({
+                            width : 700,
+                            height : 400,
+                            buttons : {
+                                'Confirm' : function(){
+                                    console.log("Confirm is clicked, now close the dialog and send data to backend, then reload the page using jquery")
+                                }
+                            }
+                        })
                     }
                 }
+                })
+
             })
+
+            //get basket id and add to user, confirm box later.
+            $('#default_dialog_list').click(function(e){
+                console.log(e.target.parentNode.parentNode)
+                console.log($(e.target.parentNode.parentNode).attr('basket_id'));
+                var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
+                //make ajax call, close the dialog box and put data inside table
+                $.ajax({
+                    url : '../../api/v1/fetch_submit_baskets/',
+                    method : 'post',
+                    data : {
+                        csrfmiddlewaretoken : $(csrf_token).attr('value'),
+                        selected_basket_id : selected_basket_id_var
+                    }
+                }).done(function(data){
+                    console.log(data);
+                    window.location.reload();
+                })
+            });
         });
     </script>
 

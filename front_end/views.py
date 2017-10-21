@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from django.contrib.auth import login, authenticate, logout
 
 from front_end.core.basket_view.fetch_pre_baskets import FetchPreBaskets
+from front_end.core.basket_view.fetch_basket import FetchBasket
+from front_end.core.basket_view.submit_basket import SubmitBasket
 
 # Create your views here.
 
@@ -85,8 +87,19 @@ class FetchPreBasketsView(APIView):
 
     def get(self, request):
 
-        return FetchPreBaskets.return_pre_baskets()
+        return Response(FetchPreBaskets().return_pre_baskets())
 
     def post(self, request):
 
         pass
+
+
+class FetchSubmitBasket(APIView):
+
+    def get(self, request):
+
+        return Response(data=FetchBasket(request).push_fetch_basket())
+
+    def post(self, request):
+
+        return Response(SubmitBasket(request).submit_basket())

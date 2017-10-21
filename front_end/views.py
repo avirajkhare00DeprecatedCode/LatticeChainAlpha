@@ -103,3 +103,14 @@ class FetchSubmitBasket(APIView):
     def post(self, request):
 
         return Response(SubmitBasket(request).submit_basket())
+
+
+class CreateNewBasketView(APIView):
+
+    def get(self, request):
+
+        pass
+
+    def post(self, request):
+
+        pass

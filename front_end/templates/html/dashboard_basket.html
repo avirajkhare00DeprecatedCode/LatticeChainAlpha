@@ -311,7 +311,7 @@
                                         if($($(value).children()[0]).hasClass("row")){
                                             console.log($.trim($(value).find('.col-md-10').html()));
                                             console.log($(value).find('.col-md-2').find('input').val());
-                                            user_new_basket.append(
+                                            user_new_basket.push(
                                                 {
                                                     "coin_name" : $.trim($(value).find('.col-md-10').html()),
                                                     "allocation_percent" : $(value).find('.col-md-2').find('input').val()
@@ -321,6 +321,18 @@
                                     })
 
                                     //write ajax call here
+                                    $.ajax({
+                                        url: '../../api/v1/fetch_submit_baskets/',
+                                        method: 'post',
+                                        data: {
+                                            csrfmiddlewaretoken : $(csrf_token).attr('value'),
+                                            basket_name : $('#new_basket_name').val(),
+                                            basket_json_data : user_new_basket
+                                        }
+                                    }).done(function (data) {
+                                        console.log(data);
+                                        window.location.reload();
+                                    })
                                 }
                         }
             });

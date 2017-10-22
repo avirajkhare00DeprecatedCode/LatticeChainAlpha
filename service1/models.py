@@ -101,10 +101,11 @@ class TransactionData(models.Model):
 
 class NewCryptoBasket(models.Model):
 
-    basket_id = models.CharField(max_length=20, unique=True)
     user_id = models.ForeignKey(User, null=True, blank=True)
+    basket_id = models.CharField(max_length=20, unique=True)
     basket_name = models.CharField(max_length=100)
     basket_info = models.TextField(null=True, blank=True)
+    amount_allocated = models.CharField(max_length=100, null=True, blank=True)
     json_data = JSONField(null=True, blank=True)
 
     def __unicode__(self):

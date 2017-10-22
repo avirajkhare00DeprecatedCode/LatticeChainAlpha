@@ -216,14 +216,16 @@
 <script>
     var csrf_token = "{% csrf_token %}";
 
+    //this code is for getting baskets user already selected
     $.get('../../api/v1/fetch_submit_baskets/', function (data) {
         for (var i = 0; i < data.length; i++) {
             $('#user_basket_table').append(
                 '<tr><td>' + data[i].basket_name + '</td></tr>'
             )
         }
-    })
+    });
 
+    //this code is for getting all pre made basket data
     $('#add_new_basket').click(function () {
         console.log("It is getting clicked!")
         //do the api call shit here and then inside success call dialog
@@ -263,8 +265,44 @@
                     }
                 }
             })
-
         })
+    });
+
+    $('#default_dialog_list').click(function(e){
+        
+        $.get('../../api/v1/fetch_pre_baskets/', function(data){
+            
+            var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
+
+            for(var i=0; i<data.length; i++){
+                if(i.toString() == data[i].basket_id){
+                    var basketObj = data[i.toString()];
+                }
+            }
+
+            for(i=0; i<basketObj.basket_json_data.basket_json_data.length; i++){
+                $('#new_basket_allocation_list').append(
+                '<div class="new_coin_area">\n' +
+                    '<div class="row">\n' +
+                        '<div class="col-md-10">\n' +
+                            basketObj.basket_json_data.basket_json_data[i].coin_name +
+                        '</div>\n' +
+                        '<div class="col-md-2">\n' +
+                            '<input class="form-control" value="' + basketObj.basket_json_data.basket_json_data[i].allocation_percent + '">\n' +
+                        '</div>\n' +
+                    '</div>\n' +
+                '</div>\n' +
+                '<hr />\n'
+            )
+            }
+
+            $('#new_basket_allocation_dialog').dialog({
+                'width' : 600,
+                'height' : 400
+            });
+        })
+
+    });
 
         //get basket id and add to user, confirm box later.
         $('#default_dialog_list').click(function (e) {
@@ -319,7 +357,6 @@
             $('#new_coin_box').dialog('close');
 
         });
-    });
 </script>
 
 {% endblock %}

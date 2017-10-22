@@ -95,3 +95,31 @@ class TransactionData(models.Model):
     def __unicode__(self):
 
         return self.user_id
+
+
+#new models, forget the old ones
+
+class NewCryptoBasket(models.Model):
+
+    basket_id = models.CharField(max_length=20, unique=True)
+    user_id = models.ForeignKey(User, null=True, blank=True)
+    basket_name = models.CharField(max_length=100)
+    basket_info = models.TextField(null=True, blank=True)
+    json_data = JSONField(null=True, blank=True)
+
+    def __unicode__(self):
+
+        return self.basket_name
+
+
+class CryptoCoinsNew(models.Model):
+
+    coin_id = models.CharField(max_length=10, unique=True)
+    coin_name = models.CharField(max_length=50, null=True, blank=True)
+    coin_ticker = models.CharField(max_length=20, null=True, blank=True)
+    coin_current_value_btc = models.CharField(max_length=50, null=True, blank=True)
+    json_data = JSONField(null=True, blank=True)
+
+    def __unicode__(self):
+
+        return self.coin_name

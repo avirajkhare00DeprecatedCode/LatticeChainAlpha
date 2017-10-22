@@ -1,4 +1,4 @@
-from service1.models import CryptoBasketUserMapping, CryptoBasket
+from service1.models import NewCryptoBasket
 from django.contrib.auth.models import User
 import json
 
@@ -11,7 +11,7 @@ class SubmitBasket():
 
     def submit_basket(self):
 
-        map_new_basket = CryptoBasketUserMapping()
+        map_new_basket = NewCryptoBasket()
 
         map_new_basket.user_id = User.objects.get(username=self.request_data.user.username)
         map_new_basket.crypto_basket = CryptoBasket.objects.get(basket_id=self.request_data.POST['selected_basket_id'])

@@ -1,4 +1,4 @@
-from service1.models import CryptoBasketUserMapping, CryptoBasket
+from service1.models import NewCryptoBasket
 
 
 class FetchBasket():
@@ -11,14 +11,14 @@ class FetchBasket():
 
     def push_fetch_basket(self):
 
-        for basket in CryptoBasketUserMapping.objects.filter(user_id__username=self.request_data.user.username):
+        for basket in NewCryptoBasket.objects.filter(user_id__username=self.request_data.user.username):
 
             #print basket.crypto_basket.basket_name
 
             self.basket_list.append(
                 {
-                    "basket_name" : basket.crypto_basket.basket_name,
-                    "basket_info" : basket.crypto_basket.basket_info
+                    "basket_name" : basket.basket_name,
+                    "basket_info" : basket.basket_info
                 }
             )
 

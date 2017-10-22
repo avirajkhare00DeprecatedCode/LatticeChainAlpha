@@ -278,11 +278,9 @@
             
             var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
 
-            for(var i=0; i<data.length; i++){
-                if(i.toString() == data[i].basket_id){
-                    var basketObj = data[i.toString()];
-                }
-            }
+            var basketObj = data[selected_basket_id_var];
+
+            console.log(basketObj)
 
             for(i=0; i<basketObj.basket_json_data.basket_json_data.length; i++){
                 $('#new_basket_allocation_list').append(

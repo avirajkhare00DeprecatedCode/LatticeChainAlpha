@@ -38,10 +38,12 @@
 </div>
 
 <div id="new_basket_allocation_dialog" title="Create New Basket" hidden>
+    <input id="new_basket_name" type="text" class="form-control" placeholder="Basket Name">
+    <hr />
     <ul id="new_basket_allocation_list" class="list-group">
     </ul>
     <div class="new_coin_area_list">
-            <button id="select_new_coin" class="btn btn-primary btn-lg btn-block" type="button">Select Coin</button>
+            <button id="select_new_coin" class="btn btn-primary btn-lg btn-block" type="button">Add more Coins</button>
         </div>
 </div>
 
@@ -271,6 +273,8 @@
     $('#default_dialog_list').click(function(e){
         
         $.get('../../api/v1/fetch_pre_baskets/', function(data){
+
+            $('#new_basket_allocation_list').empty();
             
             var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
 
@@ -298,13 +302,34 @@
 
             $('#new_basket_allocation_dialog').dialog({
                 'width' : 600,
-                'height' : 400
+                'height' : 400,
+                buttons: {
+                                'Confirm': function () {
+                                    var user_new_basket = [];
+                                    $('#new_basket_allocation_list').children().each(function(index, value){
+
+                                        if($($(value).children()[0]).hasClass("row")){
+                                            console.log($.trim($(value).find('.col-md-10').html()));
+                                            console.log($(value).find('.col-md-2').find('input').val());
+                                            user_new_basket.append(
+                                                {
+                                                    "coin_name" : $.trim($(value).find('.col-md-10').html()),
+                                                    "allocation_percent" : $(value).find('.col-md-2').find('input').val()
+                                                }
+                                            )
+                                        }
+                                    })
+
+                                    //write ajax call here
+                                }
+                        }
             });
         })
 
     });
 
-        //get basket id and add to user, confirm box later.
+        //get basket id and add to user, confirm box later, about to remove this function.
+        /*
         $('#default_dialog_list').click(function (e) {
             console.log(e.target.parentNode.parentNode)
             console.log($(e.target.parentNode.parentNode).attr('basket_id'));
@@ -322,6 +347,7 @@
                 window.location.reload();
             })
         });
+        */
 
         $('#select_new_coin').click(function(){
             $('#new_coin_box').dialog({
@@ -330,6 +356,7 @@
                 buttons : {
                     'Close' : function(){
                         //we will use this function to close this dialog!
+                        $('#new_coin_box').dialog('close');
                     }
                 }
             });

@@ -325,7 +325,7 @@
                                         data: {
                                             csrfmiddlewaretoken : $(csrf_token).attr('value'),
                                             basket_name : $('#new_basket_name').val(),
-                                            basket_json_data : user_new_basket
+                                            basket_json_data : JSON.stringify(user_new_basket)
                                         }
                                     }).done(function (data) {
                                         console.log(data);

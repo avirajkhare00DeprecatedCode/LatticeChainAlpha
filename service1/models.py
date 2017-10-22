@@ -124,3 +124,14 @@ class CryptoCoinsNew(models.Model):
     def __unicode__(self):
 
         return self.coin_name
+
+
+class HistoricalBasketData(models.Model):
+
+    coin_id = models.ForeignKey(CryptoCoinsNew)
+    date = models.CharField(max_length=20, null=True, blank=True)
+    close = models.CharField(max_length=20, null=True, blank=True)
+
+    def __unicode__(self):
+
+        return self.coin_id.coin_name

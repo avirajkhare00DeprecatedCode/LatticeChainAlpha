@@ -114,3 +114,9 @@ class CreateNewBasketView(APIView):
     def post(self, request):
 
         pass
+
+class UserProfileView(APIView):
+
+    def get(self, request):
+
+        return render(request, 'html/profile.html')

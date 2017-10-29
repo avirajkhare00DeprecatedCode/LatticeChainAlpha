@@ -49,7 +49,7 @@ class SignupView(APIView):
 
     def post(self, request):
 
-    """
+        """
 
         new_user = User()
 
@@ -78,7 +78,7 @@ class SignupView(APIView):
 
         new_user.save()
 
-    """
+        """
 
         return HttpResponse("check database now")
 

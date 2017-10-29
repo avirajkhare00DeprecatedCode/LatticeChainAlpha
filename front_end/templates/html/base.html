@@ -42,6 +42,7 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-right">
                             {% if request.user.is_authenticated %}
+                                <li><a href="../../profile/">Profile</a></li>
                                 <li><a href="../dashboard/">Dashboard</a></li>
                                 <li><a href="../logout/">Logout</a></li>
                             {% else %}
@@ -52,12 +53,12 @@
                 </div>
             </nav>
 
-            <!-- navbar area end -->
+            <div class="main-container-base">
 
-            <!-- container-div -->
-            {% block content %}
-            {% endblock %}
-            <!-- end container-div -->
+                {% block content %}
+                {% endblock %}
+            
+            </div>
 
             <!-- Footer -->
             <nav class="navbar navbar-default navbar-fixed-bottom">

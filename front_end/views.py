@@ -7,6 +7,8 @@ from front_end.core.basket_view.fetch_pre_baskets import FetchPreBaskets
 from front_end.core.basket_view.fetch_basket import FetchBasket
 from front_end.core.basket_view.submit_basket import SubmitBasket
 
+from service1.models import NewCryptoBasket
+
 # Create your views here.
 
 class IndexView(APIView):
@@ -119,4 +121,6 @@ class UserProfileView(APIView):
 
     def get(self, request):
 
-        return render(request, 'html/profile.html')
+        return render(request, 'html/profile.html', {
+            "user_baskets" : NewCryptoBasket.objects.filter(user_id__username=request.user.username)
+        })

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from service1.core.get_wallet_ids import generate_keys
+#from service1.core.get_wallet_ids import generate_keys
 from service1.core.parse_ticker import get_current_price
 
 from service1.models import User
@@ -49,6 +49,8 @@ class SignupView(APIView):
 
     def post(self, request):
 
+    """
+
         new_user = User()
 
         new_user.username = request.POST['username']
@@ -76,4 +78,7 @@ class SignupView(APIView):
 
         new_user.save()
 
+    """
+
         return HttpResponse("check database now")
+

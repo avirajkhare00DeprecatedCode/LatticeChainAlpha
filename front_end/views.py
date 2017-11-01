@@ -117,6 +117,16 @@ class CreateNewBasketView(APIView):
 
         pass
 
+class MarketPlaceView(APIView):
+
+    def get(self, request):
+
+        return render(request, 'html/marketplace.html')
+
+    def post(self, request):
+
+        return Response(data='no post request at this endpoint')
+
 class UserProfileView(APIView):
 
     def get(self, request):

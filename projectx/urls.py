@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from service1.views import SignupView, GetTickerView, CreateFakeTxn
-from front_end.views import IndexView, LoginView, LogoutView, DashboardView, FetchPreBasketsView, FetchSubmitBasket, UserProfileView
+from front_end.views import IndexView, LoginView, LogoutView, DashboardView, FetchPreBasketsView, FetchSubmitBasket, UserProfileView, MarketPlaceView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^dashboard/', DashboardView.as_view(), name='dashboard'),
     url(r'^profile/$', UserProfileView.as_view(), name='user_profile'),
+    url(r'^marketplace/$', MarketPlaceView.as_view(), name='marketplace_view'),
     #below are api urls
     url(r'^api/v1/fetch_pre_baskets/$', FetchPreBasketsView.as_view(), name='fetch_pre_baskets'),
     url(r'^api/v1/fetch_submit_baskets/$', FetchSubmitBasket.as_view(), name='fetch_submit_basket')

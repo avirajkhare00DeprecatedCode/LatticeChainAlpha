@@ -18,7 +18,8 @@ class FetchBasket():
             self.basket_list.append(
                 {
                     "basket_name" : basket.basket_name,
-                    "basket_info" : basket.basket_info
+                    "basket_info" : basket.basket_info,
+                    "amount_allocated" : basket.amount_allocated
                 }
             )
 

@@ -25,7 +25,7 @@
     <table id="user_basket_table" class="table">
         <tr>
             <th>Basket Name</th>
-            <th>Price</th>
+            <th>Price($)</th>
         </tr>
     </table>
 </div>
@@ -38,7 +38,23 @@
 </div>
 
 <div id="new_basket_allocation_dialog" title="Create New Basket" hidden>
-    <input id="new_basket_name" type="text" class="form-control" placeholder="Basket Name">
+    <div class="row">
+        <div class="col-md-4">
+            <p>Basket Name</p>
+        </div>
+        <div class="col-md-8">
+            <input id="new_basket_name" type="text" class="form-control col-md-8" placeholder="Basket Name">
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-9">
+            <p>Total money allocation</p>
+        </div>
+        <div class="col-md-3">
+            <input id="total_money_allocation" type="number" class="form-control col-md-4" placeholder="$">
+        </div>
+    </div>
     <hr />
     <ul id="new_basket_allocation_list" class="list-group">
     </ul>
@@ -220,9 +236,10 @@
 
     //this code is for getting baskets user already selected
     $.get('../../api/v1/fetch_submit_baskets/', function (data) {
+        console.log(data)
         for (var i = 0; i < data.length; i++) {
             $('#user_basket_table').append(
-                '<tr><td>' + data[i].basket_name + '</td></tr>'
+                '<tr><td>' + data[i].basket_name + '</td><td>' + data[i].amount_allocated + '</td></tr>'
             )
         }
     });
@@ -260,7 +277,35 @@
                             height: 400,
                             buttons: {
                                 'Confirm': function () {
-                                    console.log("Confirm is clicked, now close the dialog and send data to backend, then reload the page using jquery")
+                                    var user_new_basket = [];
+                                    $('#new_basket_allocation_list').children().each(function(index, value){
+
+                                        if($($(value).children()[0]).hasClass("row")){
+                                            console.log($.trim($(value).find('.col-md-10').html()));
+                                            console.log($(value).find('.col-md-2').find('input').val());
+                                            user_new_basket.push(
+                                                {
+                                                    "coin_name" : $.trim($(value).find('.col-md-10').html()),
+                                                    "allocation_percent" : $(value).find('.col-md-2').find('input').val()
+                                                }
+                                            )
+                                        }
+                                    })
+
+                                    //write ajax call here
+                                    $.ajax({
+                                        url: '../../api/v1/fetch_submit_baskets/',
+                                        method: 'post',
+                                        data: {
+                                            csrfmiddlewaretoken : $(csrf_token).attr('value'),
+                                            basket_name : $('#new_basket_name').val(),
+                                            amount_allocated : $('#total_money_allocation').val(),
+                                            basket_json_data : JSON.stringify(user_new_basket)
+                                        }
+                                    }).done(function (data) {
+                                        console.log(data);
+                                        window.location.reload();
+                                    })
                                 }
                             }
                         })
@@ -325,6 +370,7 @@
                                         data: {
                                             csrfmiddlewaretoken : $(csrf_token).attr('value'),
                                             basket_name : $('#new_basket_name').val(),
+                                            amount_allocated : $('#total_money_allocation').val(),
                                             basket_json_data : JSON.stringify(user_new_basket)
                                         }
                                     }).done(function (data) {

@@ -16,6 +16,7 @@ class FetchPreBaskets():
                 'basket_id' : basket.basket_id,
                 'basket_name' : basket.basket_name,
                 'basket_info' : basket.basket_info,
+                'amount_allocated' : basket.amount_allocated,
                 'basket_json_data' : basket.json_data
             })
 

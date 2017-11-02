@@ -127,6 +127,27 @@ class MarketPlaceView(APIView):
 
         return Response(data='no post request at this endpoint')
 
+class MarketPlaceBuyView(APIView):
+
+    def get(self, request):
+
+        pass
+
+    def post(self, request):
+
+        pass
+
+
+class MarketPlaceSellView(APIView):
+
+    def get(self, request):
+
+        return render(request, 'html/marketplace_sell.html')
+
+    def post(self, request):
+
+        pass
+
 class UserProfileView(APIView):
 
     def get(self, request):

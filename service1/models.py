@@ -29,7 +29,7 @@ class CryptoBasket(models.Model):
 class CryptoBasketUserMapping(models.Model):
 
     user_id = models.ForeignKey(User, default=1)
-    crypto_basket = models.ForeignKey(CryptoBasket, unique=True)
+    crypto_basket = models.OneToOneField(CryptoBasket)
 
     def __unicode__(self):
 
@@ -105,7 +105,8 @@ class NewCryptoBasket(models.Model):
     basket_id = models.CharField(max_length=20, unique=True)
     basket_name = models.CharField(max_length=100)
     basket_info = models.TextField(null=True, blank=True)
-    amount_allocated = models.CharField(max_length=100, null=True, blank=True)
+    buy_or_sell = models.CharField(max_length=10, null=True, blank=True)
+    price_on_creation = models.CharField(max_length=100, null=True, blank=True)
     json_data = JSONField(null=True, blank=True)
 
     def __unicode__(self):
@@ -118,6 +119,7 @@ class CryptoCoinsNew(models.Model):
     coin_id = models.CharField(max_length=10, unique=True)
     coin_name = models.CharField(max_length=50, null=True, blank=True)
     coin_ticker = models.CharField(max_length=20, null=True, blank=True)
+    current_price_dollar = models.CharField(max_length=20, null=True, blank=True)
     coin_current_value_btc = models.CharField(max_length=50, null=True, blank=True)
     json_data = JSONField(null=True, blank=True)
 

@@ -49,10 +49,10 @@
     <hr />
     <div class="row">
         <div class="col-md-9">
-            <p>Total money allocation</p>
+            <p>Current Price</p>
         </div>
         <div class="col-md-3">
-            <input id="total_money_allocation" type="number" class="form-control col-md-4" placeholder="$">
+            <input id="price_on_creation" type="number" class="form-control col-md-4" placeholder="$" disabled>
         </div>
     </div>
     <hr />
@@ -234,12 +234,23 @@
 <script>
     var csrf_token = "{% csrf_token %}";
 
+    //TURNING ASYNC FALSE
+    $.ajaxSetup({async:false});
+
+
     //this code is for getting baskets user already selected
     $.get('../../api/v1/fetch_submit_baskets/', function (data) {
-        console.log(data)
+        console.log(data);
+        //a mapping for cryptoname and coinmarket ticker name
+        //"bitcoin","ethereum","ripple","litecoin","dash","bitcoin-cash","nem","monero","neo","ethereum-classic","iota","bitconnect","lisk","omisego","civic","qtum","vertcoin","stratis"
+        var coin_mapping = {
+            "Bitcoin" : "bitcoin", "Ethereum" : "ethereum", "Ripple" : "ripple", "Litecoin" : "litecoin", "Dash" : "dash", "Bitcoin Cash" : "bitcoin-cash", "NEM" : "nem", "Monero" : "monero", "NEO" : "neo", "ETC" : "ethereum-classic", "IOTA" : "iota", "BitConnect" : "bitconnect", "Lisk" : "lisk", "OmiseGo" : "omisego", "Civic" : "civic", "QTUM" : "qtum", "Vertcoin" : "vertcoin", "Stratis" : "stratis"
+        };
+
         for (var i = 0; i < data.length; i++) {
             $('#user_basket_table').append(
-                '<tr><td>' + data[i].basket_name + '</td><td>' + data[i].amount_allocated + '</td></tr>'
+                //'<tr><td>' + data[i].basket_name + '<br />' + (function(allocation_list) {var small_str = '';for (var j = 0; j < allocation_list.length; j++){small_str += allocation_list[j].coin_name + '-' + allocation_list[j].allocation_percent + '/'}return small_str}(JSON.parse(data[i].json_data))) + '</td><td>' + data[i].amount_allocated + '</td></tr>'
+                '<tr><td>' + data[i].basket_name + '<br />' + (function(allocation_list) {var small_str = '';for (var j = 0; j < allocation_list.length; j++){small_str += allocation_list[j].coin_name + '-' + allocation_list[j].coin_qty + '/'}return small_str}(JSON.parse(data[i].json_data))) + '</td><td>' + data[i].price_on_creation + '</td></tr>'
             )
         }
     });
@@ -286,11 +297,11 @@
                                             user_new_basket.push(
                                                 {
                                                     "coin_name" : $.trim($(value).find('.col-md-10').html()),
-                                                    "allocation_percent" : $(value).find('.col-md-2').find('input').val()
+                                                    "coin_qty" : $(value).find('.col-md-2').find('input').val()
                                                 }
                                             )
                                         }
-                                    })
+                                    });
 
                                     //write ajax call here
                                     $.ajax({
@@ -299,7 +310,7 @@
                                         data: {
                                             csrfmiddlewaretoken : $(csrf_token).attr('value'),
                                             basket_name : $('#new_basket_name').val(),
-                                            amount_allocated : $('#total_money_allocation').val(),
+                                            price_on_creation : $('#price_on_creation').val(),
                                             basket_json_data : JSON.stringify(user_new_basket)
                                         }
                                     }).done(function (data) {
@@ -325,7 +336,7 @@
 
             var basketObj = data[selected_basket_id_var];
 
-            console.log(basketObj)
+            console.log(basketObj);
 
             for(i=0; i<basketObj.basket_json_data.basket_json_data.length; i++){
                 $('#new_basket_allocation_list').append(
@@ -357,7 +368,7 @@
                                             user_new_basket.push(
                                                 {
                                                     "coin_name" : $.trim($(value).find('.col-md-10').html()),
-                                                    "allocation_percent" : $(value).find('.col-md-2').find('input').val()
+                                                    "coin_qty" : $(value).find('.col-md-2').find('input').val()
                                                 }
                                             )
                                         }
@@ -370,7 +381,7 @@
                                         data: {
                                             csrfmiddlewaretoken : $(csrf_token).attr('value'),
                                             basket_name : $('#new_basket_name').val(),
-                                            amount_allocated : $('#total_money_allocation').val(),
+                                            price_on_creation : $('#price_on_creation').val(),
                                             basket_json_data : JSON.stringify(user_new_basket)
                                         }
                                     }).done(function (data) {
@@ -383,27 +394,6 @@
         })
 
     });
-
-        //get basket id and add to user, confirm box later, about to remove this function.
-        /*
-        $('#default_dialog_list').click(function (e) {
-            console.log(e.target.parentNode.parentNode)
-            console.log($(e.target.parentNode.parentNode).attr('basket_id'));
-            var selected_basket_id_var = $(e.target.parentNode.parentNode).attr('basket_id');
-            //make ajax call, close the dialog box and put data inside table
-            $.ajax({
-                url: '../../api/v1/fetch_submit_baskets/',
-                method: 'post',
-                data: {
-                    csrfmiddlewaretoken: $(csrf_token).attr('value'),
-                    selected_basket_id: selected_basket_id_var
-                }
-            }).done(function (data) {
-                console.log(data);
-                window.location.reload();
-            })
-        });
-        */
 
         $('#select_new_coin').click(function(){
             $('#new_coin_box').dialog({
@@ -418,6 +408,54 @@
             });
         });
 
+        //create an api call function and return total amount of selected coin
+
+        function calculate_basket_value(coin_name, coin_qty){
+
+            var coin_mapping = {
+            "Bitcoin" : "bitcoin", "Ethereum" : "ethereum", "Ripple" : "ripple", "Litecoin" : "litecoin", "Dash" : "dash", "Bitcoin Cash" : "bitcoin-cash", "NEM" : "nem", "Monero" : "monero", "NEO" : "neo", "ETC" : "ethereum-classic", "IOTA" : "iota", "BitConnect" : "bitconnect", "Lisk" : "lisk", "OmiseGo" : "omisego", "Civic" : "civic", "QTUM" : "qtum", "Vertcoin" : "vertcoin", "Stratis" : "stratis"
+            };
+
+            var api_endpoint = "https://api.coinmarketcap.com/v1/ticker/" + coin_mapping[coin_name] + '/';
+            console.log(api_endpoint);
+            var price = 0;
+
+            $.get(api_endpoint, function (data) {
+                price = parseFloat(data[0].price_usd) * parseFloat(coin_qty);
+
+            });
+
+            return price;
+
+        }
+
+        //adding onkeyup function to fetch current price on id new_basket_allocation_list
+
+        $('#new_basket_allocation_list').keyup(function(e){
+
+            var total_price = 0;
+
+            var elements = $('#new_basket_allocation_list').children();
+
+            for(var i=0; i<elements.length; i++){
+                if(i%2 == 0){
+                    //console.log($(elements[i]).children());
+                    console.log(elements[i].childNodes[1].childNodes);
+                    //console.log($(elements[i].childNodes[1].childNodes[1]).text());//coin_name
+                    var coin_name = $.trim($(elements[i].childNodes[1].childNodes[1]).text());
+                    console.log($(elements[i].childNodes[1].childNodes[3].childNodes[1]).val());//coin_qty
+                    var coin_qty = $(elements[i].childNodes[1].childNodes[3].childNodes[1]).val();
+
+                    console.log(calculate_basket_value(coin_name, coin_qty));
+
+                    total_price += calculate_basket_value(coin_name, coin_qty);
+                }
+            }
+
+            $('#price_on_creation').val(total_price);
+
+        });
+
         //click event if any coin is selected
         $('#new_coin_box').click(function(e){
             //console.log(e.target);
@@ -430,12 +468,12 @@
                             $.trim($(e.target).text()) +
                         '</div>\n' +
                         '<div class="col-md-2">\n' +
-                            '<input class="form-control" placeholder="%" />\n' +
+                            '<input class="form-control" placeholder="qty"/>\n' +
                         '</div>\n' +
                     '</div>\n' +
                 '</div>\n' +
                 '<hr />\n'
-            )
+            );
 
             $('#new_coin_box').dialog('close');
 

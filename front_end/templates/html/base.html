@@ -42,10 +42,10 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-right">
                             {% if request.user.is_authenticated %}
-                                <li><a href="../../marketplace/">MarketPlace</a></li>
-                                <li><a href="../../profile/">Profile</a></li>
-                                <li><a href="../dashboard/">Dashboard</a></li>
-                                <li><a href="../logout/">Logout</a></li>
+                                <li><a href="../../../marketplace/">MarketPlace</a></li>
+                                <li><a href="../../../profile/">Profile</a></li>
+                                <li><a href="../../dashboard/">Dashboard</a></li>
+                                <li><a href="../../logout/">Logout</a></li>
                             {% else %}
                                 <li><a href="../login">Login</a></li>
                             {% endif %}

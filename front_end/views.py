@@ -161,7 +161,7 @@ class MarketPlaceApi(APIView):
 
             baskets_data = []
 
-            for basket in BuyBasketExtension.objects.all().reverse():
+            for basket in BuyBasketExtension.objects.all():
 
                 baskets_data.append(
                     {
@@ -181,7 +181,7 @@ class MarketPlaceApi(APIView):
 
             baskets_data = []
 
-            for basket in SellBasketExtension.objects.all().reverse():
+            for basket in SellBasketExtension.objects.all():
 
                 baskets_data.append(
                     {

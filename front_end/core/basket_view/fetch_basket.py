@@ -17,6 +17,7 @@ class FetchBasket():
 
             self.basket_list.append(
                 {
+                    'basket_id': basket.basket_id,
                     "basket_name" : basket.basket_name,
                     "basket_info" : basket.basket_info,
                     "price_on_creation" : basket.price_on_creation,

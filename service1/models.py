@@ -29,7 +29,7 @@ class CryptoBasket(models.Model):
 class CryptoBasketUserMapping(models.Model):
 
     user_id = models.ForeignKey(User, default=1)
-    crypto_basket = models.OneToOneField(CryptoBasket)
+    crypto_basket = models.OneToOneField(CryptoBasket, unique=True)
 
     def __unicode__(self):
 
@@ -105,13 +105,39 @@ class NewCryptoBasket(models.Model):
     basket_id = models.CharField(max_length=20, unique=True)
     basket_name = models.CharField(max_length=100)
     basket_info = models.TextField(null=True, blank=True)
-    buy_or_sell = models.CharField(max_length=10, null=True, blank=True)
     price_on_creation = models.CharField(max_length=100, null=True, blank=True)
     json_data = JSONField(null=True, blank=True)
 
     def __unicode__(self):
 
         return self.basket_name
+
+
+class BuyBasketExtension(models.Model):
+
+    basket_id = models.OneToOneField(NewCryptoBasket)
+    buy_price = models.CharField(max_length=20, null=True, blank=True)
+    is_negotiable = models.BooleanField(default=False, blank=True)
+    negotiable_price = JSONField(null=True, blank=True)
+    expiration_date = models.CharField(max_length=10, null=True, blank=True)
+
+    def __unicode__(self):
+
+        return self.basket_id.basket_id
+
+
+class SellBasketExtension(models.Model):
+
+    basket_id = models.OneToOneField(NewCryptoBasket)
+    sell_price = models.CharField(max_length=20, null=True, blank=True)
+    is_negotiable = models.BooleanField(default=False, blank=True)
+    negotiable_price = JSONField(null=True, blank=True)
+    expiration_date = models.CharField(max_length=10, null=True, blank=True)
+
+    def __unicode__(self):
+
+        return self.basket_id.basket_id
+
 
 
 class CryptoCoinsNew(models.Model):

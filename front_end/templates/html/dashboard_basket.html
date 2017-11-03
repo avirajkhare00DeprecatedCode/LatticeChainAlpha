@@ -25,7 +25,9 @@
     <table id="user_basket_table" class="table">
         <tr>
             <th>Basket Name</th>
-            <th>Price($)</th>
+            <th>Price at creation($)</th>
+            <th>Current Price</th>
+            <th>Buy/Sell</th>
         </tr>
     </table>
 </div>
@@ -250,7 +252,11 @@
         for (var i = 0; i < data.length; i++) {
             $('#user_basket_table').append(
                 //'<tr><td>' + data[i].basket_name + '<br />' + (function(allocation_list) {var small_str = '';for (var j = 0; j < allocation_list.length; j++){small_str += allocation_list[j].coin_name + '-' + allocation_list[j].allocation_percent + '/'}return small_str}(JSON.parse(data[i].json_data))) + '</td><td>' + data[i].amount_allocated + '</td></tr>'
-                '<tr><td>' + data[i].basket_name + '<br />' + (function(allocation_list) {var small_str = '';for (var j = 0; j < allocation_list.length; j++){small_str += allocation_list[j].coin_name + '-' + allocation_list[j].coin_qty + '/'}return small_str}(JSON.parse(data[i].json_data))) + '</td><td>' + data[i].price_on_creation + '</td></tr>'
+                '<tr><td>' + data[i].basket_name + '<br />' + (function(allocation_list) {var small_str = '';for (var j = 0; j < allocation_list.length; j++){small_str += allocation_list[j].coin_name + '-' + allocation_list[j].coin_qty + '/'}return small_str}(JSON.parse(data[i].json_data))) + '</td><td>' + data[i].price_on_creation + '</td><td>' + (function(allocation_list) {var total_price = 0;for (var j = 0; j < allocation_list.length; j++) {total_price += calculate_basket_value(allocation_list[j].coin_name,allocation_list[j].coin_qty)}console.log(total_price);return total_price}(JSON.parse(data[i].json_data))) + '</td>\n' +
+                    '<td><div class="btn-group" role="group" aria-label="...">\n' +
+                        '<button act="sell" type="button" class="btn btn-danger buy_sell_button" id="' + data[i].basket_id + '">Sell</button>\n' +
+                        '<button act="buy" type="button" class="btn btn-success buy_sell_button" id="' + data[i].basket_id + '">Buy</button>\n' +
+                    '</div></td></tr>'
             )
         }
     });
@@ -314,7 +320,6 @@
                                             basket_json_data : JSON.stringify(user_new_basket)
                                         }
                                     }).done(function (data) {
-                                        console.log(data);
                                         window.location.reload();
                                     })
                                 }
@@ -417,7 +422,6 @@
             };
 
             var api_endpoint = "https://api.coinmarketcap.com/v1/ticker/" + coin_mapping[coin_name] + '/';
-            console.log(api_endpoint);
             var price = 0;
 
             $.get(api_endpoint, function (data) {
@@ -425,7 +429,7 @@
 
             });
 
-            return price;
+            return Number(price.toFixed(2));
 
         }
 
@@ -478,6 +482,114 @@
             $('#new_coin_box').dialog('close');
 
         });
+
+        //event when basket is bought or sold
+        $('.buy_sell_button').click(function(e) {
+            console.log(e.target.getAttribute("id"));
+            var basket_id = e.target.getAttribute("id");
+            console.log(e.target.getAttribute("act"));
+            var buy_or_sell = e.target.getAttribute("act");
+
+            var buy_order_dialog = '<form id="buy_order_dialog">\n' +
+                '<div class="form-group">\n' +
+                '<label for="input_buy_price">Buy Price</label>\n' +
+                '<input id="buy_order_dialog_buy_price" type="number" class="form-control" id="input_buy_price" placeholder="0">\n' +
+                '</div>\n' +
+                '<div class="form-group">\n' +
+                '<label for="input_expiration_date">Expiration date</label>\n' +
+                '<input id="buy_order_dialog_expiration_date" type="date" class="form-control" id="input_expiration_date">\n' +
+                '</div>\n' +
+                '<div class="checkbox">\n' +
+                '<label>\n' +
+                '<input id="buy_order_dialog_negotiable_checkbox" type="checkbox"> Negotiable?\n' +
+                '</label>\n' +
+                '</div>\n' +
+                '<button id="buy_order_dialog_submit_button" type="button" class="btn btn-default">Submit</button>\n' +
+                '</form>\n';
+
+            var sell_order_dialog = '<form id="sell_order_dialog">\n' +
+                '<div class="form-group">\n' +
+                '<label for="input_sell_price">Sell Price</label>\n' +
+                '<input id="sell_order_dialog_sell_price" type="number" class="form-control" id="input_sell_price" placeholder="0">\n' +
+                '</div>\n' +
+                '<div class="form-group">\n' +
+                '<label for="input_expiration_date">Expiration date</label>\n' +
+                '<input id="sell_order_dialog_expiration_date" type="date" class="form-control" id="input_expiration_date">\n' +
+                '</div>\n' +
+                '<div class="checkbox">\n' +
+                '<label>\n' +
+                '<input id="sell_order_dialog_negotiable_checkbox" type="checkbox"> Negotiable?\n' +
+                '</label>\n' +
+                '</div>\n' +
+                '<button id="sell_order_dialog_submit_button" type="button" class="btn btn-default">Submit</button>\n' +
+                '</form>\n';
+
+            if (buy_or_sell == "buy") {
+                $(buy_order_dialog).dialog();
+
+                $('#buy_order_dialog_submit_button').click(function(){
+                console.log("Button is clicked");
+
+                $.ajax({
+                url: '../../api/v1/submit_basket_marketplace/',
+                method: 'post',
+                data: {
+                    csrfmiddlewaretoken : $(csrf_token).attr('value'),
+                    action : "buy",
+                    basket_id : basket_id,
+                    sell_price : $('#sell_order_dialog_sell_price').val(),
+                    expiration_date : $('#sell_order_dialog_expiration_date').val(),
+                    is_negotiable : (function(){if($('#buy_order_dialog_negotiable_checkbox').prop('checked')){return "True"}else{return "False"}}())
+                }
+            }).done(function (data) {
+                console.log(data);
+                window.location.reload();
+            })
+            });
+            };
+
+            if (buy_or_sell == "sell") {
+                $(sell_order_dialog).dialog();
+
+                $('#sell_order_dialog_submit_button').click(function(){
+                console.log("Button is clicked");
+
+                $.ajax({
+                url: '../../api/v1/submit_basket_marketplace/',
+                method: 'post',
+                data: {
+                    csrfmiddlewaretoken : $(csrf_token).attr('value'),
+                    action : "sell",
+                    basket_id : basket_id,
+                    sell_price : $('#sell_order_dialog_sell_price').val(),
+                    expiration_date : $('#sell_order_dialog_expiration_date').val(),
+                    is_negotiable : (function(){if($('#sell_order_dialog_negotiable_checkbox').prop('checked')){return "True"}else{return "False"}}())
+                }
+            }).done(function (data) {
+                console.log(data);
+                window.location.reload();
+            })
+            });
+            };
+
+            });
+
+
+        /*$.ajax({
+                url: '../../api/v1/submit_basket_marketplace/',
+                method: 'post',
+                data: {
+                    csrfmiddlewaretoken : $(csrf_token).attr('value'),
+                    basket_id : basket_id,
+                    buy_or_sell : buy_or_sell
+                }
+            }).done(function (data) {
+                console.log(data);
+                window.location.reload();
+            })
+        });*/
+
+
 </script>
 
 {% endblock %}

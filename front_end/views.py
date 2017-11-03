@@ -7,7 +7,12 @@ from front_end.core.basket_view.fetch_pre_baskets import FetchPreBaskets
 from front_end.core.basket_view.fetch_basket import FetchBasket
 from front_end.core.basket_view.submit_basket import SubmitBasket
 
-from service1.models import NewCryptoBasket
+from front_end.core.marketplace_class.send_basket_marketplace import BuySellBasketMarketPlace
+
+from service1.models import NewCryptoBasket, BuyBasketExtension, SellBasketExtension
+from front_end.core.util.util1 import get_bast_value_buy, get_bast_value_sell
+
+import requests, json
 
 # Create your views here.
 
@@ -131,7 +136,7 @@ class MarketPlaceBuyView(APIView):
 
     def get(self, request):
 
-        pass
+        return render(request, 'html/marketplace_buy.html')
 
     def post(self, request):
 
@@ -147,6 +152,112 @@ class MarketPlaceSellView(APIView):
     def post(self, request):
 
         pass
+
+class MarketPlaceApi(APIView):
+
+    def get(self, request):
+
+        if request.GET['action'] == 'fetch_buy_baskets':
+
+            baskets_data = []
+
+            for basket in BuyBasketExtension.objects.all().reverse():
+
+                baskets_data.append(
+                    {
+                        "basket_id" : basket.basket_id.basket_id,
+                        "basket_name" : basket.basket_id.basket_name,
+                        "json_data" : basket.basket_id.json_data,
+                        "buy_price" : basket.buy_price,
+                        "is_negotiable" : basket.is_negotiable,
+                        "expiration_date" : basket.expiration_date,
+                        "best_ask" : get_bast_value_buy(basket.negotiable_price)
+                    }
+                )
+
+            return Response(data=baskets_data)
+
+        if request.GET['action'] == 'fetch_sell_baskets':
+
+            baskets_data = []
+
+            for basket in SellBasketExtension.objects.all().reverse():
+
+                baskets_data.append(
+                    {
+                        "basket_id" : basket.basket_id.basket_id,
+                        "basket_name" : basket.basket_id.basket_name,
+                        "json_data" : basket.basket_id.json_data,
+                        "sell_price" : basket.sell_price,
+                        "is_negotiable" : basket.is_negotiable,
+                        "expiration_date" : basket.expiration_date,
+                        "best_ask" : get_bast_value_sell(basket.negotiable_price)
+                    }
+                )
+
+            return Response(data=baskets_data)
+
+
+    def post(self, request):
+
+        if request.POST['action'] == "save_bid_price_buy":
+
+            basket = BuyBasketExtension.objects.get(basket_id__basket_id=request.POST['basket_id'])
+            if basket.negotiable_price == None:
+                basket.negotiable_price = [
+                    {
+                        "username" : request.user.username,
+                        "negotiable_price" : request.POST['bid_price']
+                    }
+                ]
+            else:
+                existing_negotiable_array = basket.negotiable_price
+
+                existing_negotiable_array.append(
+                    {
+                        "username": request.user.username,
+                        "negotiable_price": request.POST['bid_price']
+                    }
+                )
+
+                basket.negotiable_price = existing_negotiable_array
+
+            basket.save()
+
+
+        elif request.POST['action'] == "save_bid_price_sell":
+
+            basket = SellBasketExtension.objects.get(basket_id__basket_id=request.POST['basket_id'])
+            if basket.negotiable_price == None:
+                basket.negotiable_price = [
+                    {
+                        "username" : request.user.username,
+                        "negotiable_price" : request.POST['bid_price']
+                    }
+                ]
+            else:
+                existing_negotiable_array = basket.negotiable_price
+
+                existing_negotiable_array.append(
+                    {
+                        "username": request.user.username,
+                        "negotiable_price": request.POST['bid_price']
+                    }
+                )
+
+                basket.negotiable_price = existing_negotiable_array
+
+            basket.save()
+
+        elif request.POST['action'] == "buy":
+
+            BuySellBasketMarketPlace(request, "buy")
+
+        elif request.POST['action'] == "sell":
+
+            BuySellBasketMarketPlace(request, "sell")
+
+        return Response("Oki")
 
 class UserProfileView(APIView):
 

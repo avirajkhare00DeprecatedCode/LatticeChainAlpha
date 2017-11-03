@@ -17,7 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from service1.views import SignupView, GetTickerView, CreateFakeTxn
 from front_end.views import IndexView, LoginView, LogoutView, DashboardView, FetchPreBasketsView, FetchSubmitBasket, UserProfileView, MarketPlaceView
-from front_end.views import MarketPlaceSellView
+from front_end.views import MarketPlaceSellView, MarketPlaceBuyView, MarketPlaceApi
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -31,7 +31,10 @@ urlpatterns = [
     url(r'^profile/$', UserProfileView.as_view(), name='user_profile'),
     url(r'^marketplace/$', MarketPlaceView.as_view(), name='marketplace_view'),
     url(r'^marketplace/sell/$', MarketPlaceSellView.as_view(), name='marketplace_sell_view'),
+    url(r'^marketplace/buy/$', MarketPlaceBuyView.as_view(), name='marketplace_sell_view'),
     #below are api urls
     url(r'^api/v1/fetch_pre_baskets/$', FetchPreBasketsView.as_view(), name='fetch_pre_baskets'),
-    url(r'^api/v1/fetch_submit_baskets/$', FetchSubmitBasket.as_view(), name='fetch_submit_basket')
+    url(r'^api/v1/fetch_submit_baskets/$', FetchSubmitBasket.as_view(), name='fetch_submit_basket'),
+    url(r'^api/v1/submit_basket_marketplace/$', MarketPlaceApi.as_view(), name='buy_sell_send'),
+    url(r'^api/v1/fetch_buy_basket_marketplace/$', MarketPlaceApi.as_view(), name='buy_baskets_marketplace')
 ]

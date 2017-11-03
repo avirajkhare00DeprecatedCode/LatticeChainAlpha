@@ -5,7 +5,7 @@
     <div class="sell_view">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Sell Area.</h3>
+                <h3 class="panel-title">Buy Area.</h3>
             </div>
             <div class="panel-body">
                 Some shit we will fill here!
@@ -15,11 +15,11 @@
             <tr>
                 <th>Basket Name</th>
                 <th>Current Price</th>
-                <th>Sell Price</th>
+                <th>Buy Price</th>
                 <th>Expiry</th>
                 <th>Negotiable</th>
-                <th>Best Ask</th>
-                <th>Buy</th>
+                <th>Best Bid</th>
+                <th>Sell</th>
             </tr>
 
         </table>
@@ -32,12 +32,12 @@
         $.ajaxSetup({async:false});
 
         //we will do some shit here...
-        $.get('../../api/v1/fetch_buy_basket_marketplace/?action=fetch_sell_baskets', function(data){
+        $.get('../../api/v1/fetch_buy_basket_marketplace/?action=fetch_buy_baskets', function(data){
             for(var i=0; i<data.length; i++){
                 $('#basket_buy_table').append(
                     '<tr>\n' +
                         '<td>' + data[i].basket_name + '<br />' + (function(allocation_list) {var small_str = '';for (var j = 0; j < allocation_list.length; j++){small_str += allocation_list[j].coin_name + '-' + allocation_list[j].coin_qty + '/'}return small_str}(JSON.parse(data[i].json_data))) + '</td><td>' + (function(allocation_list) {var total_price = 0;for (var j = 0; j < allocation_list.length; j++) {total_price += calculate_basket_value(allocation_list[j].coin_name,allocation_list[j].coin_qty)}console.log(total_price);return total_price}(JSON.parse(data[i].json_data))) + '</td>\n' +
-                        '<td>' + data[i].sell_price + '</td><td>' + data[i].expiration_date + '</td><td>' + (function(if_negotiable, basket_id){if(if_negotiable){var negotiable_dom='<form>\n'+'<input id="'+basket_id+'">\n'+'<button class="negotiable_dom_button" type="button">Negotiate</button>\n'+'</form>\n';return negotiable_dom}else{return "Not Applicable"}}(data[i].is_negotiable,data[i].basket_id)) + '</td>\n' +
+                        '<td>' + data[i].buy_price + '</td><td>' + data[i].expiration_date + '</td><td>' + (function(if_negotiable, basket_id){if(if_negotiable){var negotiable_dom='<form>\n'+'<input id="'+basket_id+'">\n'+'<button class="negotiable_dom_button" type="button">Negotiate</button>\n'+'</form>\n';return negotiable_dom}else{return "Not Applicable"}}(data[i].is_negotiable,data[i].basket_id)) + '</td>\n' +
                         '<td>' + data[i].best_ask + '</td></tr>\n'
                 )
             }
@@ -73,7 +73,7 @@
                 method: 'post',
                 data: {
                     csrfmiddlewaretoken : $(csrf_token).attr('value'),
-                    action : "save_bid_price_sell",
+                    action : "save_bid_price_buy",
                     basket_id : $(e.target.parentNode).find('input').attr('id'),
                     bid_price : $(e.target.parentNode).find('input').val()
                 }

@@ -1,17 +1,235 @@
-{% extends 'html/base.html' %}
-{% block content %}
 {% load staticfiles %}
 
-    <!-- Page Content -->
-    <div class="container-fluid">
+  <!DOCTYPE html>
+  <html>
+  <head>
 
-      <div class="row">
+  	  <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <h1>
-            Right now working on Dashboard only!
-        </h1>
 
+  	<title>Project X</title>
+
+  	<link href="{% static 'css/style.css' %}" rel="stylesheet">
+  	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=EB+Garamond|Exo+2|Libre+Franklin" rel="stylesheet">
+      <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" rel="stylesheet">
+       <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+      <style type="text/css">
+          .about_x {
+	        background-image: url("{% static 'images/image4.jpg' %}");
+          }
+      </style>
+
+  </head>
+
+  <body>
+
+  <header id="navbar">
+   <nav class="navbar navbar-fixed-top navbar-default">
+     <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Project X</a><i  class=" icon fa fa-lightbulb-o"></i><span class="logo">Making Investment Sound</span>
       </div>
-    <!-- /.container -->
 
-    {% endblock %}
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="text-center login"><a href="#">SignUp/Login</a></li>
+        </ul>
+       <ul class="nav navbar-nav navbar-right">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#what_we_do">What we do</a></li>
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#promise">Promise</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+     </div><!-- /.container-fluid -->
+   </nav>
+  </header>
+
+  	<section id="home">
+     <img src="{% static 'images/background.jpg' %}">
+
+     <div class="home_section">
+      <h1>India’s First Stock-Investment <br> Platform </h1>
+
+      <a href="#what_we_do">Learn More</a>
+     </div>
+   </section>
+
+  	<section id="what_we_do">
+     <h1>Our Services</h1>
+     <hr class="underline"></hr>
+     <div class="container-fluid ">
+       <div class="row text-center">
+
+          <div class="services col-md-3">
+            <h4>Stock Analytics</h4>
+             <img src="{% static 'images/icon2.png' %}">
+          </div>
+          <div class="services col-md-3">
+            <h4>One Click Diversification</h4>
+             <img src="{% static 'images/icon1.png' %}">
+          </div>
+          <div class="services col-md-3">
+            <h4>Decentralized Marketplace</h4>
+             <img src="{% static 'images/icon3.png' %}">
+          </div>
+          <div class="services col-md-3">
+            <h4>Digital Network</h4>
+             <img src="{% static 'images/icon4.png' %}">
+          </div>
+       </div>
+    </div>
+
+    <div class="container-fluid about_x">
+      <div class="row">
+        <div class="col-sm-6 project_x">
+          <p><b class="title">PROJECT X</b> : India’s First Stock-Investment  Platform <br>
+
+              </br>"We endeavor to democratize Stocks and help our clients take sound judgement and prudent investment calls while dealing with coins.
+              Buy, Sell, trade, invest, and network over Stocks like ITC, Monaco, Tata,  etc and many more through Smart contracts over Blockchain"
+          </p>
+        </div>
+
+        <div class="col-sm-6 project_x video">
+          <!-- <h4>Biggest Stock-Investment Platform</h4> -->
+          <!-- <i class="fa fa-bar-chart"></i> -->
+          <iframe width="100%" height="100%"
+            src="https://www.youtube.com/embed/C_ccs2WOc_w">
+          </iframe>
+
+        </div>
+      </div>
+     </div>
+
+    </section>
+
+    <section id="dashboard">
+
+      <h2 class="text-center">Dashboard</h2>
+      <hr class="underline"></hr>
+      <a href="#">Open Account!</a>
+
+      <div class="container-fluid">
+        <div class="row work text-center">
+          <h3>How Project X Works</h3>
+          <div class="col-md-3 col-left dashboard">
+            <img src="{% static 'images/icon5.png' %}">
+            <p>We understand how difficult it can be to manage multiple Keys, Wallets, and Accounts in Stockland while ensuring Security.
+              <b>Project  X</b> offers a decentralized marketplace that allows users to store and manage multiple stock portfolios, secured with robust in house Stockgraphic algorithms and immutable blockchain fundamentals
+            </p>
+          </div>
+          <div class="col-md-3  dashboard">
+            <img src="{% static 'images/icon2.png'%}">
+                    <p>With little awareness and knowhow, most Indian investors are not comfortable to start their Stock journey
+                        <b>Project X</b> offers its users an unique user friendly enjoyable experience through prediction games, Machine learning, bot analytics, followership, and much more
+
+                    </p>
+          </div>
+          <div class="col-md-3  dashboard">
+            <img src="{% static 'images/icon1.png' %}">
+                    <p>We know how confusing Stock returns could be as all coins are valued against BTC. Although returns are seen, but comparative returns are often ignored.
+                      Our 1 Click Diversification, helps our clients diversify their portfolio, track and multiply their stocks using in-house Analytics.
+                      <b>Project X</b> Tokenization engine helps create a market for tokenized digital assets
+
+                    </p>
+          </div>
+          <div class="col-md-3 dashboard">
+            <img src="{% static 'images/icon3.png' %}">
+                    <p>We find Stock investments mostly happening in Siloes with knowledge concentrated in the hands of few
+                        Our interactive Digital Network feature value our experts and creates a knowledge based ecosystem of sound investment judgement for new entrants to the Stock world
+
+                    </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+      <section id="promise">
+        <h1>Our Promise</h1>
+         <p>We Will Keep our Promise ..</p>
+        <div class="container">
+          <div class="row text-center">
+            <div class="col-md-3 icons">
+              <i class="fa fa-smile-o"></i>
+              <h4>Minimum Transaction <br>Charges</h4>
+            </div>
+            <div class="col-md-3 icons">
+              <i class="fa fa-refresh"></i>
+              <h4>Best in class <br> Security </h4>
+            </div>
+            <div class="col-md-3 icons">
+              <i class="fa fa-clock-o"></i>
+              <h4>Fast Deposits and<br> Withdrawals</h4>
+            </div>
+            <div class="col-md-3 icons">
+              <i class=" fa fa-users"></i>
+              <h4>Excellent User <br>support</h4>
+            </div>
+
+      </section>
+
+
+    <section id="about_us">
+       <h2>About Us</h2>
+       <hr class="break"></hr>
+      <div class="conatiner">
+        <div class="row text-center">
+          <div class="col-md-3">
+             <img src="{% static 'images/profile.jpg' %}">
+                <h4>Nilotpal Mukherjee</h4>
+                <p>Founder & CEO</p>
+          </div>
+          <div class="col-md-3">
+                <img src="{% static 'images/profile.jpg' %}">
+                <h4>Aviraj Khare</h4>
+                <p>Founder & CTO</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  	<section id="faq"></section>
+
+  	<section id="contact_us"></section>
+
+  	<section></section>
+
+   <a href="#home" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+
+    <footer>
+
+      <a class="app" href="#">Go To Our Mobile App<img src="{% static 'images/app.png' %}"></a>
+      <!-- <div><i class="fa fa-hand-o-down"></i></div> -->
+      <!-- <a href="#"><img src=" images/app.png"></a> -->
+      <!-- <div class="sign_up"><a href="#">Login/SignUp</a></div> -->
+      <div class="social">
+       <a href=""><i class="fa fa-twitter"></i></a>
+       <a href=""><i class="fa fa-facebook chat"></i></a>
+       <a href=""><i class="fa fa-youtube-play red"></i></a>
+       <a href=""><i class="fa fa-linkedin"></i></a>
+       <a href=""><i class="fa fa-telegram"></i></a>
+      </div>
+      <h3>Project X</h3>
+      <p class="quote">Making Investments Sound</p>
+      <p class="rights">Copyright@2017. All Rights Reserved By Project <span>X</span> </p>
+    </footer>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src=" {% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+  </body>
+  </html>

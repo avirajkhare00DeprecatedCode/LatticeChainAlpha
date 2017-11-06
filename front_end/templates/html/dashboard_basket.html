@@ -537,8 +537,8 @@
                     csrfmiddlewaretoken : $(csrf_token).attr('value'),
                     action : "buy",
                     basket_id : basket_id,
-                    sell_price : $('#sell_order_dialog_sell_price').val(),
-                    expiration_date : $('#sell_order_dialog_expiration_date').val(),
+                    buy_price : $('#buy_order_dialog_buy_price').val(),
+                    expiration_date : $('#buy_order_dialog_expiration_date').val(),
                     is_negotiable : (function(){if($('#buy_order_dialog_negotiable_checkbox').prop('checked')){return "True"}else{return "False"}}())
                 }
             }).done(function (data) {

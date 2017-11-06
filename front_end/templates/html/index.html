@@ -42,14 +42,16 @@
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li class="text-center login"><a href="#">SignUp/Login</a></li>
-        </ul>
        <ul class="nav navbar-nav navbar-right">
           <li><a href="#home">Home</a></li>
           <li><a href="#what_we_do">What we do</a></li>
-          <li><a href="#dashboard">Dashboard</a></li>
           <li><a href="#promise">Promise</a></li>
+           {% if user.is_authenticated %}
+                <li><a href="../../dashboard">Dashboard</a></li>
+                <li><a href="../../logout">Log Out</a></li>
+           {% else %}
+                <li><a href="../../login">Log In</a></li>
+           {% endif %}
           <li><a href="#">About Us</a></li>
           <li><a href="#">Contact Us</a></li>
         </ul>

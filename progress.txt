@@ -1,0 +1,17 @@
+We need to create following things as of now:-
+
+1. check index, signup and login page(user should be able to login and no other account from same email id)
+index working, login working, need a signup page and design of login page
+
+2. When user enters in Dashboard, it should show all tokens available in her account.
+ask user to add missing tokens by giving erc20 tokens, it will loop through all the tokens and one option to add
+missing token, see Vigilbot how they are able to track all tokens - using etherscan, they just see all the transactions.(option to add later)
+Later option to remove token from tracking
+TODO - Taking all token prices from coinmarketcap
+    this is main net feature
+
+3. In marketPlace, there will be many things, buying/selling tokens containing many tokens
+
+    Now creating a basket of tokens to sell
+    1. User can create basket in any network, just mention on top which network they are using
+    2. 

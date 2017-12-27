@@ -2,6 +2,9 @@
 {% block content %}
 {% load staticfiles %}
 
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
     <!-- Page Content -->
     <div class="container">
 
@@ -10,19 +13,38 @@
 
         <div class="col-md-8">
 
-            <div class="dashboard-navbar-main">
-
-                <ul class="nav nav-pills nav-justified">
-                    <li><a href="#">Summary</a></li>
-                    <li><a id='show_baskets' href="#">Baskets</a></li>
-                    <li><a href="#">Balance</a></li>
-                    <li><a href="#">Activity</a></li>
-                </ul>
-
+            <div class="balanceHeading">
+                Balance(<span id="networkNameDisplay"></span>)
             </div>
+            
+            <div class="missingTokenArea">
+                Missing Tokens?<br />
+                <a id="missingTokenClick" href="#">Add a token</a>
+                <div id="missingTokenDialog" hidden>
+                    <form>
+                        <div class="form-group">
+                            <label for="missingTokenAddress">Token Address:</label>
+                            <input id="missingTokenAddress" class="form-control" type="text" placeholder="Enter contract address" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
             <div class="info-area">
-                {% block dashboard %}
-                {% endblock %}
+                <table class="table" id="pushUserTokens">
+                    <tr>
+                        <th>Coin/ERC20 Name</th>
+                        <th>Ether/Tokens Available</th>
+                        <th>Price Ether</th>
+                        <th>Price($)</th>
+                    </tr>
+                    <tr>
+                        <td>Ether(ETH)</td>
+                        <td id="etherAvailableTable"></td>
+                        <td>1</td>
+                        <td id="etherAvailablePrice"></td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="col-md-2"></div>
@@ -33,10 +55,404 @@
     <!-- /.container -->
 
     <script>
-        $('#show_baskets').click(function(){
-            console.log("This click is working!")
-            window.location.href = '../dashboard/baskets/'
-        })
+    
+        var csrf_token = $("{% csrf_token %}").attr('value');
+        var networkId = "";
+        
+        var erc20TokenABI = [
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "name",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "version",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "name": "balance",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "approveAndCall",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "name": "_spender",
+        "type": "address"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "name": "remaining",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "_initialAmount",
+        "type": "uint256"
+      },
+      {
+        "name": "_tokenName",
+        "type": "string"
+      },
+      {
+        "name": "_decimalUnits",
+        "type": "uint8"
+      },
+      {
+        "name": "_tokenSymbol",
+        "type": "string"
+      }
+    ],
+    "type": "constructor"
+  },
+  {
+    "payable": false,
+    "type": "fallback"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Approval",
+    "type": "event"
+  },
+]
+
+        var web3TokenContract = web3.eth.contract(erc20TokenABI);
+        
+        //function to display network id
+        web3.version.getNetwork(function(err, network_data){
+            if(err){
+                console.error(err);
+            }else{
+                networkId = network_data;
+                //calling function to get user_tokens
+                getUserTokens(network_data);
+                switch (network_data) {
+                case "1":
+                    $('#networkNameDisplay').text("Main");
+                    break;
+                case "2":
+                    $('#networkNameDisplay').text("Morden");
+                    break;
+                case "3":
+                    $('#networkNameDisplay').text("Ropsten");
+                    break;
+                case "4":
+                    $('#networkNameDisplay').text("Rinkeby");
+                    break;
+                case "42":
+                    $('#networkNameDisplay').text("Kovan");
+                break;
+                default:
+                    $('#networkNameDisplay').text("Unknown");
+            }
+            }
+        });
+        
+        web3.eth.getBalance(web3.eth.accounts[0],(function(err, data){
+            if(err){
+                console.error(err);
+            }else{
+                $('#etherAvailableTable').text(web3.fromWei(data));
+            }
+        }));
+        
+        $.get('https://api.coinmarketcap.com/v1/ticker/ethereum/', function(data){
+            $('#etherAvailablePrice').text(data[0].price_usd);
+        });
+        
+        //ajax call to reterive all user token contract address along with network id
+        function getUserTokens(network_id){
+            $.ajax({
+                url : '../api/v1/get_user_tokens/',
+                method : 'get',
+                data : {networkId : networkId}
+            }).done(function(data){
+                console.log(data);
+                //here we need to iterate through array and find balances of all tokens along with token name
+                data.forEach(function(tokenAddress){
+                    var bal, name, sym;
+                    web3TokenContract.at(tokenAddress).balanceOf(web3.eth.accounts[0], function(err, data){
+                        if(err){
+                            console.error(err)
+                        }
+                        bal = data.c[0].toString();
+                        web3TokenContract.at(tokenAddress).name(function(err, data){if(err){console.error(err)}$('#tableNameSym-'+tokenAddress).text(data)});
+                        web3TokenContract.at(tokenAddress).symbol(function(err, data){if(err){console.error(err)}$('#tableNameSym-'+tokenAddress).text($('#tableNameSym-'+tokenAddress).text() + '(' + data + ')')});
+                        
+                        //appending it to table
+                        $('#pushUserTokens').append(
+                            '<tr>\n' +
+                                '<td id="' + 'tableNameSym-' + tokenAddress + '">' + '</td>\n' +
+                                '<td id="' + 'tableBal-' + tokenAddress + '">' + bal + '</td>\n' +
+                            '</tr>\n'
+                        );
+                        
+                    });
+                    
+                });
+            })
+        }
+        
+        $('#missingTokenClick').click(function(){
+            $('#missingTokenDialog').dialog({
+                width : 600,
+                height : 400,
+                buttons : {
+                    'Submit' : function(){
+                        //write ajax post request here, also take csrf token as outer var
+                        //inputs - token address, csrf_token and network id
+                        var contractAddress = $('#missingTokenAddress').val();
+                        if(verifyAddress(contractAddress)){
+                            //do ajax call here
+                            $.ajax({
+                                        url: '../../api/v1/add_user_token/',
+                                        method: 'post',
+                                        data: {
+                                            csrfmiddlewaretoken : csrf_token,
+                                            networkId : networkId,
+                                            tokenAddress : contractAddress
+                                        }
+                                    }).done(function (data) {
+                                        window.location.reload();
+                                    })
+                        }
+                    },
+                    'Close' : function(){
+                        //we will use this function to close this dialog!
+                        $('#missingTokenDialog').dialog('close');
+                    }
+                }
+            });
+        });
+        
+        function verifyAddress(address){
+            if(address.length == 42 && address.slice(0,2) == '0x'){
+                //will add erc20 token standard function later, that would check any params, if address is
+                //not found. alert error and ask again
+                return true;
+            }else{
+                alert('invalid address');
+                return false;
+            }
+        }
+        
+        
     </script>
 
     {% endblock %}

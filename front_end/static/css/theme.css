@@ -29,3 +29,13 @@
   padding-top: 60px;
   padding-bottom: 70px;
 }
+
+.balanceHeading {
+  font-size : 30px;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.missingTokenArea {
+  margin-bottom: 12px;
+}

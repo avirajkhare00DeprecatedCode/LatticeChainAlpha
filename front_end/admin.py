@@ -1,6 +1,5 @@
 from django.contrib import admin
-
+from models import ERC20Address
 # Register your models here.
-from service1.models import CryptoBasketUserMapping
 
-admin.site.register(CryptoBasketUserMapping)
+admin.site.register(ERC20Address)

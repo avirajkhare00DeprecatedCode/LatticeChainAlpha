@@ -10,8 +10,11 @@ Later option to remove token from tracking
 TODO - Taking all token prices from coinmarketcap
     this is main net feature
 
-3. In marketPlace, there will be many things, buying/selling tokens containing many tokens
+3. In marketPlace, there will be many things, buying/selling tokens containing many tokens(want to give all exit as ether base currency)
+    It is a page containing many markets, basic page is coded :)
 
-    Now creating a basket of tokens to sell
+    Now creating a basket of tokens to sell(Sell Token Basket)
     1. User can create basket in any network, just mention on top which network they are using
-    2. 
+    2. Case scenario: User has 3 tokens and wants to sell it.
+        Assuming simple ui as of now.
+        Two partitions in a page, 1 is sell area another is of orders people posted

@@ -1,0 +1,57 @@
+{% extends 'html/base.html' %}
+{% block content %}
+{% load staticfiles %}
+
+
+    <div class="container">
+
+        <div class="market_place_title">
+            MarketPlace
+        </div>
+
+    <div class="row">
+        
+          <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <img src="..." alt="" width="80px" height="80px">
+              <div class="caption">
+                <h3>Sell Token Basket</h3>
+                <p>Sell your basket of ERC20 tokens.</p>
+                <p><a href="/sell_token_basket" class="btn btn-primary" role="button">Sell</a></p>
+              </div>
+            </div>
+          </div>
+        
+        
+        
+          <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <img src="..." alt="" width="80px" height="80px">
+              <div class="caption">
+                <h3>Buy Token Basket</h3>
+                <p>Buy basket of ERC20 tokens.</p>
+                <p><a href="/buy_token_basket" class="btn btn-primary" role="button">Buy</a></p>
+              </div>
+            </div>
+          </div>
+        
+        
+        
+          <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <img src="..." alt="" width="80px" height="80px">
+              <div class="caption">
+                <h3>More markets...</h3>
+                <p>More market coming soon...</p>
+                <p><a href="../../our_progress/" class="btn btn-primary" role="button">Track</a></p>
+              </div>
+            </div>
+          </div>
+          
+    </div>
+        
+        
+    </div>
+
+
+{% endblock %}

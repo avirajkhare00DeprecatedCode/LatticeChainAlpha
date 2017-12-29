@@ -65,6 +65,18 @@ class DashboardView(APIView):
     def post(self, request):
 
         pass
+    
+class MarketPlaceView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated():
+            
+            return render(request, 'html/marketplace_dashboard.html')
+            
+        else:
+            
+            return redirect('../../login/')
 
 
 #Put all api classes inside api_calls file

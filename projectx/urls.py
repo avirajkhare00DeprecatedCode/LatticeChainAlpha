@@ -15,10 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-#from service1.views import SignupView, GetTickerView, CreateFakeTxn
-from front_end.views import IndexView, LoginView, LogoutView, DashboardView
+
+from front_end.views import IndexView, LoginView, LogoutView, DashboardView, MarketPlaceView
 from front_end.api_calls import AddUserToken, GetUserTokens
-#from front_end.views import MarketPlaceSellView, MarketPlaceBuyView, MarketPlaceApi
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,8 +26,8 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^dashboard/', DashboardView.as_view(), name='dashboard'),
+    url(r'^marketplace/$', MarketPlaceView.as_view(), name='marketplace_view'),
     #url(r'^profile/$', UserProfileView.as_view(), name='user_profile'),
-    #url(r'^marketplace/$', MarketPlaceView.as_view(), name='marketplace_view'),
     #url(r'^marketplace/sell/$', MarketPlaceSellView.as_view(), name='marketplace_sell_view'),
     #url(r'^marketplace/buy/$', MarketPlaceBuyView.as_view(), name='marketplace_sell_view'),
     #below are api urls

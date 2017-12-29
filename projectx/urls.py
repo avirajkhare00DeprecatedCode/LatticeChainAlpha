@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from front_end.views import IndexView, LoginView, LogoutView, DashboardView, MarketPlaceView
+from front_end.views import IndexView, LoginView, LogoutView, DashboardView, MarketPlaceView, MarketPlaceSellBasketView
 from front_end.api_calls import AddUserToken, GetUserTokens
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^dashboard/', DashboardView.as_view(), name='dashboard'),
     url(r'^marketplace/$', MarketPlaceView.as_view(), name='marketplace_view'),
+    url(r'^marketplace/sell_token_basket/$', MarketPlaceSellBasketView.as_view(), name='sell_token_basket'),
     #url(r'^profile/$', UserProfileView.as_view(), name='user_profile'),
     #url(r'^marketplace/sell/$', MarketPlaceSellView.as_view(), name='marketplace_sell_view'),
     #url(r'^marketplace/buy/$', MarketPlaceBuyView.as_view(), name='marketplace_sell_view'),

@@ -6,7 +6,7 @@
     <div class="container">
 
         <div class="market_place_title">
-            Sell Tokens(<span id="networkNameDisplay"></span>)
+            Tokenize(<span id="networkNameDisplay"></span>)
         </div>
 
         <div class="panel panel-default">
@@ -24,35 +24,24 @@
                 <th>Tokens to Trade</th>
               </tr>
             </table>
-            <hr />
-                    Ether to Trade: <input type="number" step="any" id="etherTradeValue" />
-                    <button id="orderButton" type="button" class="btn btn-primary">Create Order</button>
+                    <button id="orderButton" type="button" class="btn btn-primary">Tokenize</button>
         </div>
         </div>
         
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Your History</h3>
+            <h3 class="panel-title">Your Tokenized Assets</h3>
           </div>
           <div class="panel-body">
-            This is table along with confirm order when clicked, it will make call to smart contract to confirm a order.
+            <table id="tokenizedTable" class="table">
+                
+            </table>
           </div>
         </div>
-        
         
     </div>
     
     <script>
-    
-    $.getScript('../../static/js/ethereumjs-tx.js');
-    
-      //function to generate random string
-      function randomString(length) {
-        var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var result = '';
-        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-        return result;
-      };
     
         //get network id, send request to reterieve all tokens and finally display tick, name, symbol, avail balance
         //and how much tokens to create basket for.
@@ -62,23 +51,19 @@
          
          var networkId = '';
          
-         var orderId = randomString(30);
-         
          var userTokenAddresses = [];
          
          var sellerTokenAddress = [], sellerTokenAddressQty = [];
-         
-         var EtherTradeQty = 0;
-         
-         var tokenTraderBasketAddress = '0x745c02abC7378B0E7543A4874d25A4299742cA49';
         
         var erc20TokenABI = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"},{"name":"_extraData","type":"bytes"}],"name":"approveAndCall","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_initialAmount","type":"uint256"},{"name":"_tokenName","type":"string"},{"name":"_decimalUnits","type":"uint8"},{"name":"_tokenSymbol","type":"string"}],"type":"constructor"},{"payable":false,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"},];
 
         var erc20TokenContract = web3.eth.contract(erc20TokenABI);
         
-        var tokentraderbasketABI = [{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"orderBasketsAccts","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"supply","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_orderuuid","type":"bytes32"},{"name":"_sellerTokens","type":"address[]"},{"name":"_sellerTokenQty","type":"uint256[]"},{"name":"_bidPrice","type":"uint256"}],"name":"makeOrder","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenAddress","type":"address[]"},{"name":"value","type":"uint256[]"}],"name":"swapTokensOwner","outputs":[{"name":"number","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_order_id","type":"bytes32"},{"name":"_seller","type":"address"}],"name":"checkOrderStatus","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_order_id","type":"bytes32"},{"name":"_seller","type":"address"}],"name":"checkPull","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_orderuuid","type":"bytes32"}],"name":"transferTokenBuyer","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_orderuuid","type":"bytes32"}],"name":"allowAndPull","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"}]
+        var tokenWrapperContractABI = [{"constant":false,"inputs":[{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"}],"name":"tokenize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getUserTotalSets","outputs":[{"name":"_totalOrders","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getUserSet","outputs":[{"name":"_setAddress","type":"address"},{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oldOwner","type":"address"},{"name":"_newOwner","type":"address"},{"name":"_setIndex","type":"uint256"}],"name":"changeUserSet","outputs":[{"name":"_newIndex","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_setOwner","type":"address"},{"name":"_index","type":"uint256"}],"name":"isDetokenized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"TransferFromWrapper","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_tokens","type":"address[]"},{"indexed":false,"name":"_value","type":"uint256[]"},{"indexed":false,"name":"_tokenizedAsset","type":"address"}],"name":"TokenizeContractAddress","type":"event"}];
         
-        var tokentraderbasketContract = web3.eth.contract(tokentraderbasketABI);
+        var tokenWrapperContract = web3.eth.contract(tokenWrapperContractABI);
+        
+        var tokenWrapperContractAddress = "0x03FE28D35bf0914395169749a97a7b4a3D3465C0";
          
          //function to display network id
         web3.version.getNetwork(function(err, network_data){
@@ -176,7 +161,7 @@
                         }
                     });
                     
-                    erc20TokenContract.at(tokenAddress).allowance(web3.eth.accounts[0], tokenTraderBasketAddress, function(err, data){
+                    erc20TokenContract.at(tokenAddress).allowance(web3.eth.accounts[0], tokenWrapperContractAddress, function(err, data){
                         if(err){
                             console.error(err);
                         }else{
@@ -185,11 +170,8 @@
                     });
                     
                 });
-            })
+            });
         }
-        
-        //code to fetch all existing orders
-        $.get()
         
         $('#orderButton').on('click', function(){
             
@@ -202,7 +184,7 @@
             
             //function to approve all tokens
             for(var i=0; i<sellerTokenAddress.length; i++){
-              erc20TokenContract.at(sellerTokenAddress[i]).approve(tokenTraderBasketAddress, sellerTokenAddressQty[i], function(err, data){
+              erc20TokenContract.at(sellerTokenAddress[i]).approve(tokenWrapperContractAddress, sellerTokenAddressQty[i], function(err, data){
                 if(err){
                   console.error(err);
                 }else{
@@ -213,9 +195,7 @@
             
             //now we need to do two things - 1. make a call to smart contract. 2. save this order in our db
             
-            var etherTradeValue = parseFloat($('#etherTradeValue').val());
-            
-            tokentraderbasketContract.at(tokenTraderBasketAddress).makeOrder(orderId, sellerTokenAddress, sellerTokenAddressQty, web3.toWei(etherTradeValue), {gas:300000}, function(err, data){
+            tokenWrapperContract.at(tokenWrapperContractAddress).tokenize(sellerTokenAddress, sellerTokenAddressQty, {gas:1800000}, function(err, data){
               if(err){
                 console.error(err);
               }else{
@@ -227,7 +207,6 @@
                 data : {
                   csrfmiddlewaretoken : csrf_token,
                   networkId : networkId,
-                  orderId : orderId,
                   sellerTokenAddressQty : function(){
                     var tokenQtyArray = [], i;
                     for(i=0; i<sellerTokenAddress.length; i++){
@@ -238,7 +217,6 @@
                     }
                     return JSON.stringify(tokenQtyArray);
                   },
-                  etherTradeValue : etherTradeValue,
                   transactionId : data
                 }
             }).done(function(data){
@@ -251,6 +229,20 @@
             });
             
         });
+        
+        (function(){
+            tokenWrapperContract.at(tokenWrapperContractAddress).getUserTotalSets(function(err, data){
+                var totalTokens = data.c[0];
+                console.log(totalTokens);
+                
+                for(var i=0; i<totalTokens; i++){
+                    tokenWrapperContract.at(tokenWrapperContractAddress).getUserSet(i, function(err, data){
+                        console.log(data);
+                    });
+                }
+                
+            })
+        }())
         
     </script>
 

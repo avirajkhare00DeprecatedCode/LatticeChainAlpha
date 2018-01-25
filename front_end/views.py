@@ -78,6 +78,14 @@ class MarketPlaceView(APIView):
             
             return redirect('../../login/')
             
+class TokenizeAssetsView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/marketplace_tokenize_assets.html')
+            
             
 class MarketPlaceSellBasketView(APIView):
     

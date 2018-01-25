@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from front_end.core.token_class.add_user_token import AddERC20Token
-from front_end.models import ERC20Address
+from front_end.models import ERC20Address, TokenBasketOrder
 
 
 class AddUserToken(APIView):
@@ -41,6 +41,27 @@ class GetUserTokens(APIView):
         else:
             
             return Response(data="not allowed")
+            
+            
+class TokenBasketOrderAPI(APIView):
+    
+    def post(self, request):
+        
+        if request.user.is_authenticated():
+            
+            new_order = TokenBasketOrder()
+            
+            new_order.user_id = request.user
+            new_order.network_id = request.POST['networkId']
+            new_order.order_id = request.POST['orderId']
+            new_order.seller_token_address_qty = request.POST['sellerTokenAddressQty']
+            new_order.ether_asked = request.POST['etherTradeValue']
+            new_order.transaction_id = request.POST['transactionId']
+            new_order.is_pulled = False
+            
+            new_order.save()
+            
+            return Response(200)
             
             
 """

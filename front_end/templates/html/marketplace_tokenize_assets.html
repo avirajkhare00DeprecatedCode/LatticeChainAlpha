@@ -34,7 +34,10 @@
           </div>
           <div class="panel-body">
             <table id="tokenizedTable" class="table">
-                
+                <tr>
+                    <th>Token Data</th>
+                    <th>Detokenize</th>
+                </tr>
             </table>
           </div>
         </div>
@@ -59,11 +62,13 @@
 
         var erc20TokenContract = web3.eth.contract(erc20TokenABI);
         
-        var tokenWrapperContractABI = [{"constant":false,"inputs":[{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"}],"name":"tokenize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getUserTotalSets","outputs":[{"name":"_totalOrders","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getUserSet","outputs":[{"name":"_setAddress","type":"address"},{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oldOwner","type":"address"},{"name":"_newOwner","type":"address"},{"name":"_setIndex","type":"uint256"}],"name":"changeUserSet","outputs":[{"name":"_newIndex","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_setOwner","type":"address"},{"name":"_index","type":"uint256"}],"name":"isDetokenized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"TransferFromWrapper","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_tokens","type":"address[]"},{"indexed":false,"name":"_value","type":"uint256[]"},{"indexed":false,"name":"_tokenizedAsset","type":"address"}],"name":"TokenizeContractAddress","type":"event"}];
+        var tokenWrapperContractABI = [{"constant":false,"inputs":[{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"}],"name":"tokenize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getUserTotalSets","outputs":[{"name":"_totalOrders","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getUserSet","outputs":[{"name":"_setAddress","type":"address"},{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"},{"name":"_isDetokenized","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oldOwner","type":"address"},{"name":"_newOwner","type":"address"},{"name":"_setIndex","type":"uint256"}],"name":"changeUserSet","outputs":[{"name":"_newIndex","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_setOwner","type":"address"},{"name":"_index","type":"uint256"}],"name":"isDetokenized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"TransferFromWrapper","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_tokens","type":"address[]"},{"indexed":false,"name":"_value","type":"uint256[]"},{"indexed":false,"name":"_tokenizedAsset","type":"address"}],"name":"TokenizeContractAddress","type":"event"}];
         
         var tokenWrapperContract = web3.eth.contract(tokenWrapperContractABI);
         
-        var tokenWrapperContractAddress = "0x03FE28D35bf0914395169749a97a7b4a3D3465C0";
+        var tokensetContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"_to","type":"address"}],"name":"deSet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"makeTradable","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"showSet","outputs":[{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"},{"name":"_tradable","type":"bool"},{"name":"_etherToTrade","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"tradeSet","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"_tokenSetOwner","type":"address"},{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"},{"name":"_setIndex","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]);
+        
+        var tokenWrapperContractAddress = "0xc434ebBC5d36EB61721960B9522b1062e62FecDA";
          
          //function to display network id
         web3.version.getNetwork(function(err, network_data){
@@ -230,6 +235,23 @@
             
         });
         
+        //adding event listener incase user wants to detokenize a set
+        $('#tokenizedTable').on('click', function(e){
+            console.log(e.target.id);
+            var tokenizedBasketId = e.target.id;
+            
+            //calling detokenized function on this basket and all the tokens would be transferred to
+            //web3.eth.accounts[0]
+            tokensetContract.at(tokenizedBasketId).deSet(web3.eth.accounts[0], function(err, data){
+                if(err){
+                    console.error(err);
+                }else{
+                    console.log(data);
+                    alert("transaction id: " + data);
+                }
+            })
+        })
+        
         (function(){
             tokenWrapperContract.at(tokenWrapperContractAddress).getUserTotalSets(function(err, data){
                 var totalTokens = data.c[0];
@@ -238,11 +260,42 @@
                 for(var i=0; i<totalTokens; i++){
                     tokenWrapperContract.at(tokenWrapperContractAddress).getUserSet(i, function(err, data){
                         console.log(data);
+                        
+                        //write a function here, take address and then call name, balanceOf etc. to show in basket
+                        //also append data inside a table with detokenize button
+                        var setDetailsHolder = {
+                            'tokenAddress' : [],
+                            'tokenQty' : []
+                        };
+                        
+                        for(var i=0; i<data[1].length; i++){
+                            setDetailsHolder.tokenAddress.push(data[1][i]);
+                            setDetailsHolder.tokenQty.push(data[2][i].c[0]);
+                        }
+                        
+                        getSetDetails(data[0], setDetailsHolder.tokenAddress, setDetailsHolder.tokenQty, data[3]);
+                        
+                        //making set empty
                     });
                 }
                 
             })
         }())
+        
+        function getSetDetails(setAddress, tokenAddress, tokenQty, isDetokenized){
+            $('#tokenizedTable').append(
+                    '<tr>\n' +
+                    '<td>\n' +
+                    'Set Address: ' + setAddress + '<br />' +
+                    'Token Addresses:<br />' + tokenAddress.join('<br />') + '<br />' +
+                    'Token Quantity: ' + tokenQty.join(',') + '<br />' +
+                    'isDetokenized: ' + isDetokenized + '<br />' +
+                    '</td>\n' +
+                    '<td>' +
+                    '<button id="' + setAddress + '" class="btn btn-primary">Detokenize</button>' +
+                    '</tr>\n'
+                )
+        }
         
     </script>
 

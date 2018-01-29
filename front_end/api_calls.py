@@ -2,7 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from front_end.core.token_class.add_user_token import AddERC20Token
-from front_end.models import ERC20Address, TokenBasketOrder
+from front_end.models import ERC20Address, TokenBasketOrder, TradableSets
+
+import json
 
 
 class AddUserToken(APIView):
@@ -62,6 +64,50 @@ class TokenBasketOrderAPI(APIView):
             new_order.save()
             
             return Response(200)
+            
+            
+class NewTradableBasket(APIView):
+    
+    #get to get all tradable sets
+    
+    def post(self, request):
+        
+        if request.user.is_authenticated:
+            
+            print request.POST['isTraded']
+            
+            if request.POST['isTraded'] == True:
+                
+                update_set = TradableSets.objects.get(basket_address=request.POST['tradableSetAddress'])
+                update_set.is_filled = True
+                
+                update_set.save()
+                
+                return Response(200)
+            
+            new_set = TradableSets()
+            
+            new_set.basket_address = request.POST['tradableSetAddress']
+            new_set.txn_hash = request.POST['txnHash']
+            
+            new_set.save()
+            
+            return Response(200)
+            
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            tradable_set_data = []
+            
+            for t in TradableSets.objects.filter(is_filled=False):
+                
+                tradable_set_data.append({
+                    'setAddress' : t.basket_address,
+                    'txnHash' : t.txn_hash,
+                })
+            
+            return Response(json.dumps(tradable_set_data))
             
             
 """

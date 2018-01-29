@@ -98,6 +98,14 @@ class MarketPlaceSellBasketView(APIView):
         else:
             
             return redirect('../../../login/')
+            
+class MarketPlaceBuyBasketView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/marketplace_buy_token.html')
 
 
 #Put all api classes inside api_calls file

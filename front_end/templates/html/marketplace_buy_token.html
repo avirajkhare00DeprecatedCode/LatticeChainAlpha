@@ -6,19 +6,19 @@
     <div class="container">
 
         <div class="market_place_title">
-            Sell Tokenized Assets(<span id="networkNameDisplay"></span>)
+            Buy Tokenized Assets(<span id="networkNameDisplay"></span>)
         </div>
         
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Your Tokenized Assets</h3>
+            <h3 class="panel-title">All tradable tokenized assets</h3>
           </div>
           <div class="panel-body">
             <table id="tokenizedTable" class="table">
                 <tr>
                     <th>Token Data</th>
-                    <th>Sell for Ether</th>
-                    <th>Sell</th>
+                    <th>Buy for Ether</th>
+                    <th>Buy</th>
                 </tr>
             </table>
           </div>
@@ -83,48 +83,58 @@
         
         
         (function(){
-            tokenWrapperContract.at(tokenWrapperContractAddress).getUserTotalSets(function(err, data){
-                var totalTokens = data.c[0];
-                console.log(totalTokens);
+            //first fetch all addresses from backend db
+            //add one more field to db weather basket is sold
+            $.get('../../api/v1/new_tradable_set/', function(data){
+                var tradableSetData = JSON.parse(data);
+                console.log(tradableSetData);
                 
-                for(var i=0; i<totalTokens; i++){
-                    tokenWrapperContract.at(tokenWrapperContractAddress).getUserSet(i, function(err, data){
-                        console.log(data);
-                        
-                        //write a function here, take address and then call name, balanceOf etc. to show in basket
-                        //also append data inside a table with detokenize button
-                        var setDetailsHolder = {
+                //make a callback here and inside it, make callback of getSetDetails that would fill frontend
+                for(var i=0; i<tradableSetData.length; i++){
+                    //getSet(data[i].setAddress.call());
+                    getSet(tradableSetData[i].setAddress);
+                }
+                
+            });
+        }())
+        
+        function getSet(setAddress) {
+            
+            //tokensetContract.at(setAddress)
+            tokensetContract.at(setAddress).showSet(function(err, data){
+                if(err){
+                    console.error(err);
+                }else{
+                    console.log(data);
+                    var setDetailsHolder = {
                             'tokenAddress' : [],
                             'tokenQty' : []
                         };
                         
-                        for(var i=0; i<data[1].length; i++){
-                            setDetailsHolder.tokenAddress.push('<a href="https://ropsten.etherscan.io/address/' + data[1][i] + '">' + data[1][i] + '</a>');
-                            setDetailsHolder.tokenQty.push(data[2][i].c[0]);
+                        for(var i=0; i<data[0].length; i++){
+                            setDetailsHolder.tokenAddress.push('<a href="https://ropsten.etherscan.io/address/' + data[0][i] + '">' + data[0][i] + '</a>');
+                            setDetailsHolder.tokenQty.push(data[1][i].c[0]);
                         }
                         
-                        getSetDetails(data[0], setDetailsHolder.tokenAddress, setDetailsHolder.tokenQty, data[3]);
-                        
-                    });
+                        getSetDetails(setAddress, setDetailsHolder.tokenAddress, setDetailsHolder.tokenQty, data[3]);
                 }
-                
-            })
-        }())
+            });
+            
+        }
         
-        function getSetDetails(setAddress, tokenAddress, tokenQty, isDetokenized){
+        function getSetDetails(setAddress, tokenAddress, tokenQty, etherToTrade){
             $('#tokenizedTable').append(
                     '<tr>\n' +
                         '<td>\n' +
                             'Set Address: ' + '<a href="https://ropsten.etherscan.io/address/' + setAddress + '">' + setAddress + '</a>' + '<br />' +
                             'Token Addresses:<br />' + tokenAddress.join('<br />') + '<br />' +
                             'Token Quantity: ' + tokenQty.join(',') + '<br />' +
-                            'isDetokenized: ' + isDetokenized + '<br />' +
                         '</td>\n' +
                         '<td>' +
-                            '<input type="number" step="any" id="etherToTrade-' + setAddress + '" class="form-control" />' +
+                            '<span id="etherToTradeValue-' + setAddress + '">' + web3.fromWei(etherToTrade) + '</span>' +
                         '</td>' +
                         '<td>' +
-                            '<button id="etherToTradeButton-' + setAddress + '" class="btn btn-primary">Sell</button>' +
+                            '<button id="etherToTradeButton-' + setAddress + '" class="btn btn-primary">Buy</button>' +
                         '</td>' +
                     '</tr>\n'
                 )
@@ -136,11 +146,13 @@
 
             if(e.target.id.split('-')[0] == 'etherToTradeButton'){
                 var assetAddress = e.target.id.split('-')[1];
-                var etherToTrade = $('#etherToTrade-' + assetAddress).val();
-                console.log(assetAddress, etherToTrade);
+                var etherToTrade = $('#etherToTradeValue-' + assetAddress).text();
+                etherToTrade = web3.toWei(etherToTrade);
+                
+                console.log(etherToTrade);
                 
                 //now call contract makeTradable function and if successful, save address, txn to db
-                tokensetContract.at(assetAddress).makeTradable(web3.toWei(etherToTrade), function(err, data){
+                tokensetContract.at(assetAddress).tradeSet({value:etherToTrade}, function(err, data){
                     if(err){
                         console.error(err);
                     }else{
@@ -154,11 +166,11 @@
                                 networkId : networkId,
                                 tradableSetAddress : assetAddress,
                                 txnHash : data,
-                                isTraded : false
+                                isTraded : true
                             }
                         }).done(function(data){
                             console.log(data);
-              
+                            alert(data);
                             //reload this page and load existing orders of user if exist
                             location.reload();
                         })

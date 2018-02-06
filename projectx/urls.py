@@ -17,8 +17,8 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from front_end.views import IndexView, LoginView, LogoutView, DashboardView, MarketPlaceView, MarketPlaceSellBasketView
-from front_end.views import TokenizeAssetsView, MarketPlaceBuyBasketView
-from front_end.api_calls import AddUserToken, GetUserTokens, TokenBasketOrderAPI, NewTradableBasket
+from front_end.views import TokenizeAssetsView, MarketPlaceBuyBasketView, DigitalizeTokenAssetView, BuyDigitalizedAssetsView
+from front_end.api_calls import AddUserToken, GetUserTokens, TokenBasketOrderAPI, NewTradableBasket, PostIpfsFileAPI
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -31,6 +31,8 @@ urlpatterns = [
     url(r'^marketplace/sell_token_basket/$', MarketPlaceSellBasketView.as_view(), name='sell_token_basket'),
     url(r'^marketplace/buy_token_basket/$', MarketPlaceBuyBasketView.as_view(), name='buy_token_basket'),
     url(r'^marketplace/tokenize_assets/$', TokenizeAssetsView.as_view(), name='tokenize_assets'),
+    url(r'^marketplace/digitalize_tokenized_asset/$', DigitalizeTokenAssetView.as_view(), name='digitalize_tokenized_asset'),
+    url(r'^marketplace/buy_digitalized_assets/$', BuyDigitalizedAssetsView.as_view(), name='buy_digitalized_assets'),
     #url(r'^profile/$', UserProfileView.as_view(), name='user_profile'),
     #url(r'^marketplace/sell/$', MarketPlaceSellView.as_view(), name='marketplace_sell_view'),
     #url(r'^marketplace/buy/$', MarketPlaceBuyView.as_view(), name='marketplace_sell_view'),
@@ -39,6 +41,7 @@ urlpatterns = [
     url(r'^api/v1/get_user_tokens/$', GetUserTokens.as_view(), name='get_user_tokens'),
     url(r'^api/v1/token_basket_order/$', TokenBasketOrderAPI.as_view(), name='token_basket_order'),
     url(r'^api/v1/new_tradable_set/$', NewTradableBasket.as_view(), name='new_tradable_set'),
+    url(r'^api/v1/post_ipfs_file/$', PostIpfsFileAPI.as_view(), name='post_ipfs_file'),
     #url(r'^api/v1/fetch_pre_baskets/$', FetchPreBasketsView.as_view(), name='fetch_pre_baskets'),
     #url(r'^api/v1/fetch_submit_baskets/$', FetchSubmitBasket.as_view(), name='fetch_submit_basket'),
     #url(r'^api/v1/submit_basket_marketplace/$', MarketPlaceApi.as_view(), name='buy_sell_send'),

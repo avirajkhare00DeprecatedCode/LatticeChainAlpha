@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from front_end.core.token_class.add_user_token import AddERC20Token
 from front_end.models import ERC20Address, TokenBasketOrder, TradableSets
 
+from core.ipfs.core_ipfs import ipfsFile
+
 import json
 
 
@@ -108,6 +110,17 @@ class NewTradableBasket(APIView):
                 })
             
             return Response(json.dumps(tradable_set_data))
+            
+            
+class PostIpfsFileAPI(APIView):
+    
+    def post(self, request):
+        
+        print request.FILES['ipfsFile']
+        
+        ipfsHashes = ipfsFile([request.POST['ipfsInfo'], request.FILES['ipfsFile']]).return_hash()
+        
+        return Response(data=ipfsHashes)
             
             
 """

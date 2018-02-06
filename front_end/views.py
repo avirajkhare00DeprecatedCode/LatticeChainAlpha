@@ -106,6 +106,23 @@ class MarketPlaceBuyBasketView(APIView):
         if request.user.is_authenticated:
             
             return render(request, 'html/marketplace_buy_token.html')
+            
+            
+class DigitalizeTokenAssetView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/marketplace_digitalize_token_asset.html')
+            
+class BuyDigitalizedAssetsView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/buy_digitalized_assets.html')
 
 
 #Put all api classes inside api_calls file

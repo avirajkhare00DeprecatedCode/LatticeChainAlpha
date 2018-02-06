@@ -1,0 +1,220 @@
+{% extends 'html/base.html' %}
+{% block content %}
+{% load staticfiles %}
+
+
+    <div class="container">
+
+        <div class="market_place_title">
+            Buy digital Assets(<span id="networkNameDisplay"></span>)
+        </div>
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">All Digitalized Assets</h3>
+          </div>
+          <div class="panel-body">
+            <table id="tokenizedTable" class="table">
+                <tr>
+                    <th>Token Info</th>
+                    <th>Ether Price</th>
+                    <th>Buy</th>
+                </tr>
+            </table>
+          </div>
+        </div>
+        
+    </div>
+    
+    <script>
+    
+        //get network id, send request to reterieve all tokens and finally display tick, name, symbol, avail balance
+        //and how much tokens to create basket for.
+        
+        //write code from here
+         var csrf_token = $("{% csrf_token %}").attr('value');
+         
+         var networkId = '';
+         
+         var userTokenAddresses = [];
+         
+         var sellerTokenAddress = [], sellerTokenAddressQty = [];
+        
+        var erc20TokenABI = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"},{"name":"_extraData","type":"bytes"}],"name":"approveAndCall","outputs":[{"name":"success","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_initialAmount","type":"uint256"},{"name":"_tokenName","type":"string"},{"name":"_decimalUnits","type":"uint8"},{"name":"_tokenSymbol","type":"string"}],"type":"constructor"},{"payable":false,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"},];
+
+        var erc20TokenContract = web3.eth.contract(erc20TokenABI);
+        
+        var tokenWrapperContractABI = [{"constant":false,"inputs":[{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"}],"name":"tokenize","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getUserTotalSets","outputs":[{"name":"_totalOrders","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getUserSet","outputs":[{"name":"_setAddress","type":"address"},{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"},{"name":"_isDetokenized","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_oldOwner","type":"address"},{"name":"_newOwner","type":"address"},{"name":"_setIndex","type":"uint256"}],"name":"changeUserSet","outputs":[{"name":"_newIndex","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_setOwner","type":"address"},{"name":"_index","type":"uint256"}],"name":"isDetokenized","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"TransferFromWrapper","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_from","type":"address"},{"indexed":false,"name":"_tokens","type":"address[]"},{"indexed":false,"name":"_value","type":"uint256[]"},{"indexed":false,"name":"_tokenizedAsset","type":"address"}],"name":"TokenizeContractAddress","type":"event"}];
+        
+        var tokenWrapperContract = web3.eth.contract(tokenWrapperContractABI);
+        
+        var tokensetContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"_to","type":"address"}],"name":"deSet","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"makeTradable","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"showSet","outputs":[{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"},{"name":"_tradable","type":"bool"},{"name":"_etherToTrade","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"tradeSet","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"inputs":[{"name":"_tokenSetOwner","type":"address"},{"name":"_tokenAddress","type":"address[]"},{"name":"_tokenQty","type":"uint256[]"},{"name":"_setIndex","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]);
+        
+        var tokenWrapperContractAddress = "0xc434ebBC5d36EB61721960B9522b1062e62FecDA";
+        
+        var assettokencreatorContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"getUserTokenizedAssets","outputs":[{"name":"_allTokens","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_tokenName","type":"string"},{"name":"_assetPrice","type":"uint256"},{"name":"_ipfsHash","type":"string"},{"name":"_ipfsHashInfo","type":"string"}],"name":"tokenizeAsset","outputs":[{"name":"_assetAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTokenizeOrdersArrayLength","outputs":[{"name":"_totalLength","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getTokenizeOrderByIndex","outputs":[{"name":"_tokenAsset","type":"address"},{"name":"_assetPrice","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]);
+         
+        var assettokenContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"changeTradePrice","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTradePrice","outputs":[{"name":"_value","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"tradeToken","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[],"name":"getIpfsInfo","outputs":[{"name":"_ipfsHashInfo","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getIpfs","outputs":[{"name":"_ipfsHash","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_tokenName","type":"string"},{"name":"_tokenOwner","type":"address"},{"name":"_assetPrice","type":"uint256"},{"name":"_ipfsHash","type":"string"},{"name":"_ipfsHashInfo","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]);
+        
+        var assettokencreatorContractAddress = '0xb630e4c56c39602Afd60d7155047Ed30d8894495'; 
+         
+         //function to display network id
+        web3.version.getNetwork(function(err, network_data){
+            if(err){
+                console.error(err);
+            }else{
+                networkId = network_data;
+                //calling function to get user_tokens
+                //getUserTokens(network_data);
+                switch (network_data) {
+                case "1":
+                    $('#networkNameDisplay').text("Main");
+                    break;
+                case "2":
+                    $('#networkNameDisplay').text("Morden");
+                    break;
+                case "3":
+                    $('#networkNameDisplay').text("Ropsten");
+                    break;
+                case "4":
+                    $('#networkNameDisplay').text("Rinkeby");
+                    break;
+                case "42":
+                    $('#networkNameDisplay').text("Kovan");
+                break;
+                default:
+                    $('#networkNameDisplay').text("Unknown");
+            }
+            }
+        });
+        
+        //function to return zeroes
+        function returnZeroesString(num){
+            var strZeros = '';
+            for(var i=0; i<num; i++){
+                strZeros += '0';
+            }
+            return strZeros;
+        }
+        
+        var contractAddressArray = [];
+        var contractEtherPriceArray = [];
+        
+        var ipfsEndpoint = "https://ipfs.io/ipfs/";
+        
+        //function to append data
+        function appendContractData(tokenAddress, etherPrice){
+            //we need to check if ipfs is getting returned, if yes then, button should be opened
+            //otherwise buy
+            //pulling off file info, ether price and weather user bought it or not
+
+            assettokenContract.at(tokenAddress).getIpfsInfo(function(err, data){
+                if(err){
+                    console.error(err);
+                }else{
+                    console.log(data);
+                    //now we need to fetch ipfs info
+                    
+                    fetch(ipfsEndpoint + data).then(function(data){
+                        return data.text();
+                    }).then(function(ipfsInfoText){
+                        console.log(ipfsInfoText);
+                        assettokenContract.at(tokenAddress).getIpfs(function(err, data){
+                            if(err){
+                                console.log("person didn't buy it.")
+                                //append in table here along with button when clicked, should invoke buy to that perticular contract
+                                $('#tokenizedTable').append(
+                                    '<tr>' +
+                                        '<td>' + 
+                                            ipfsInfoText + 
+                                        '</td>' + 
+                                        '<td>' +
+                                            web3.fromWei(etherPrice, 'ether') +
+                                        '</td>' +
+                                        '<td>' +
+                                            '<button class="btn btn-primary" id="buy-' + tokenAddress + '" class="btn btn-primary">Buy</button>' +
+                                    '</tr>'
+                                );
+                            }else{
+                                console.log(data);
+                                console.log('person bought it');
+                                $('#tokenizedTable').append(
+                                    '<tr>' +
+                                        '<td>' + 
+                                            ipfsInfoText + 
+                                        '</td>' + 
+                                        '<td>' +
+                                            web3.fromWei(etherPrice, 'ether') +
+                                        '</td>' +
+                                        '<td>' +
+                                            '<a class="btn btn-primary" href="' + ipfsEndpoint + data + '">Open</a>' +
+                                    '</tr>'
+                                );
+                            }
+                        })
+                    })
+                }
+            })
+        }
+        
+        
+        (function(){
+            assettokencreatorContract.at(assettokencreatorContractAddress).getTokenizeOrdersArrayLength(function(err, data){
+                
+                if(err){
+                    console.error(err);
+                }else{
+                    var totalArrayLength = parseInt(data);
+                    
+                    for(var i=0; i<totalArrayLength; i++){
+                        assettokencreatorContract.at(assettokencreatorContractAddress).getTokenizeOrderByIndex(i, function(err, data){
+                            if(err){
+                                console.error(err);
+                            }else{
+                                //create a new function here and append it to front end
+                                console.log(data);
+                                //calling appendContractData here, responsible to show buy/open button
+                                contractAddressArray.push(data[0]);
+                                contractEtherPriceArray.push(data[1].c[0].toString() + returnZeroesString(data[1].e));
+                                
+                                appendContractData(data[0], data[1].c[0].toString() + returnZeroesString(data[1].e));
+                            }
+                        });
+                    }
+                }
+                
+            });
+        })();
+        
+        //function to buy asset
+        //catch button click event here
+        $('#tokenizedTable').on('click', function(e){
+            if(e.target.id.slice(0,3) == 'buy'){
+                console.log('buy button clicked!', e.target.id.slice(4));
+                
+                //invoke get price method of smart contract then take value and invoke buy method!
+                var tokenAddress = e.target.id.slice(4);
+                
+                for(var i=0; i<contractAddressArray.length; i++){
+                    if(tokenAddress == contractAddressArray[i]){
+                        var etherPrice = contractEtherPriceArray[i];
+                    }
+                }
+                
+                assettokenContract.at(tokenAddress).tradeToken({value:etherPrice}, function(err, data){
+                    if(err){
+                        console.error(err);
+                    }else{
+                        console.log(data);
+                        alert(data);
+                    }
+                })
+                
+            }
+        })
+        
+    </script>
+
+
+{% endblock %}

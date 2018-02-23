@@ -123,6 +123,23 @@ class BuyDigitalizedAssetsView(APIView):
         if request.user.is_authenticated:
             
             return render(request, 'html/buy_digitalized_assets.html')
+            
+            
+class MobilePhoneMarketPlaceView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/mobilephone_marketplace.html')
+            
+class InsuranceMarketPlaceView(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/insurance_marketplace.html')
 
 
 #Put all api classes inside api_calls file

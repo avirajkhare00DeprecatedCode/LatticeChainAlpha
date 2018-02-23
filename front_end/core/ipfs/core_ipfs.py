@@ -32,6 +32,9 @@ class ipfsFile:
         res = api.add('front_end/core/ipfs/temp_files/' + file_name_2)
         print res
         self.fileHash.append(res['Hash'])
+        
+        #pinning all files
+        
             
             
     def return_hash(self):

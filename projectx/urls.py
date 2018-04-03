@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from front_end.views import IndexView, LoginView, LogoutView, DashboardView, MarketPlaceView, MarketPlaceSellBasketView
 from front_end.views import TokenizeAssetsView, MarketPlaceBuyBasketView, DigitalizeTokenAssetView, BuyDigitalizedAssetsView
-from front_end.views import MobilePhoneMarketPlaceView, InsuranceMarketPlaceView
+from front_end.views import BookStoreMarketPlaceView, MusicMarketPlaceView, MarketCreator
 from front_end.api_calls import AddUserToken, GetUserTokens, TokenBasketOrderAPI, NewTradableBasket, PostIpfsFileAPI
 
 urlpatterns = [
@@ -34,8 +34,9 @@ urlpatterns = [
     url(r'^marketplace/tokenize_assets/$', TokenizeAssetsView.as_view(), name='tokenize_assets'),
     url(r'^marketplace/digitalize_tokenized_asset/$', DigitalizeTokenAssetView.as_view(), name='digitalize_tokenized_asset'),
     url(r'^marketplace/buy_digitalized_assets/$', BuyDigitalizedAssetsView.as_view(), name='buy_digitalized_assets'),
-    url(r'^marketplace/mobilephone_marketplace/$', MobilePhoneMarketPlaceView.as_view(), name='mobilephone_marketplace'),
-    url(r'^marketplace/insurance_marketplace/$', InsuranceMarketPlaceView.as_view(), name='insurance_marketplace'),
+    url(r'^marketplace/bookstore_marketplace/$', BookStoreMarketPlaceView.as_view(), name='bookstore_marketplace'),
+    url(r'^marketplace/Music_marketplace/$', MusicMarketPlaceView.as_view(), name='music_marketplace'),
+    url(r'^marketplace_creator/$', MarketCreator.as_view(), name='market_creator'),
     #url(r'^profile/$', UserProfileView.as_view(), name='user_profile'),
     #url(r'^marketplace/sell/$', MarketPlaceSellView.as_view(), name='marketplace_sell_view'),
     #url(r'^marketplace/buy/$', MarketPlaceBuyView.as_view(), name='marketplace_sell_view'),

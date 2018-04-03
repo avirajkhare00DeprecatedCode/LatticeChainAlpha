@@ -9,7 +9,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-  	<title>LatticeChainEngg</title>
+  	<title>LatticeProtocol</title>
 
   	<link href="{% static 'css/style.css' %}" rel="stylesheet">
   	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
@@ -37,7 +37,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">LatticeChain</a>
+        <a class="navbar-brand" href="#">LatticeProtocol</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
@@ -49,7 +49,7 @@
           <li><a href="#">TEAM</a></li>
           <li><a href="#">BLOG</a></li>
            {% if user.is_authenticated %}
-                <li><a href="../../dashboard">Dashboard</a></li>
+                <li><a href="../../marketplace">Marketplace</a></li>
                 <li><a href="../../logout">Log Out</a></li>
            {% else %}
                 <li><a href="../../login">Log In</a></li>
@@ -70,7 +70,7 @@
 
   	<div class="container-fluid">
   	  <section id="what_we_do">
-       <h3>LATTICE PROTOCOL EMPOWERS SELLERS TO COLLABORATE AND DECENTRALLY DRIVE A SHARED VALUE MARKETPLACE</h3>
+       <h3><center>LATTICE PROTOCOL EMPOWERS SELLERS TO COLLABORATE AND DECENTRALLY DRIVE A SHARED VALUE MARKETPLACE</center></h3>
        <hr />
        <div class="container-fluid ">
          <div class="row text-center">
@@ -88,7 +88,7 @@
       <div class="container-fluid">
         <div class="row work text-center">
           <h3>LEARN HOW LATTICE PROTOCOL WORKS</h3>
-          <div class="col-md-4 col-left dashboard">
+          <div class="col-md-4 center-block dashboardColumn">
             <h3><b>BUSINESS PAPER</b></h3>
             <p>
               This document presents a summary of the business model and the ecosystem of Lattice Protocol. In addition,
@@ -96,17 +96,17 @@
               to the Yellow Paper for Lattice Protocol.
             </p>
             <center>
-              <button class="btn btn-default">Download</button>
+              <button class="btn btn-default" onclick='open_pdf()'>Download</button>
             </center>
           </div>
-          <div class="col-md-4  dashboard">
+          <div class="col-md-4 center-block dashboardColumn">
             <h3><b>YELLOW PAPER</b></h3>
             <p>
               This technical primer presents a short introduction to Lattice Protocol.
             </p>
             <center>TBU</center>
           </div>
-          <div class="col-md-4  dashboard">
+          <div class="col-md-4 center-block dashboardColumn">
             <h3><b>FRAMEWORK</b></h3>
             <p>
               This document presents a summary of the business model and ecosystem of Lattice Protocol.
@@ -121,7 +121,7 @@
     </section>
 
     <section id="what_we_do">
-     <h3>Our vision is to create a Globally interconnected value economy leveraging the principles of shared decentralized marketplace!!</h3>
+     <h3><center>Our vision is to create a Globally interconnected value economy leveraging the principles of shared decentralized marketplace!!</center></h3>
      <hr />
      <div class="container-fluid ">
        <div class="row">
@@ -132,7 +132,7 @@
            <h3>
              <b>About Lattice Protocol.</b>
            </h3>
-           <p>
+           <p id="aboutLatticeParagraph">
              The sharing marketplace incepted with the idea of decentralization, has come
              to a standpoint of being a concentrated model, with a network strength in the
              grip of centralized organizations running them. The journey initially orchestrated
@@ -141,7 +141,6 @@
              economy now requires a perfectly distributed marketplace, which can leverage the
              effects of shared economy while through its architecture create a ground for value
              generation through network effect.
-             <br />
              This opens door for us to create the next mile in decentralization ecosystem, and give
              the world a state of the art indigenously designed Lattice protocol enabling 
              a Smart digitally driven value economy.
@@ -179,8 +178,7 @@
    <a href="#home" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
 
     <footer>
-
-      <a class="app" href="#">Go To Our Mobile App<img src="{% static 'images/app.png' %}"></a>
+        
       <!-- <div><i class="fa fa-hand-o-down"></i></div> -->
       <!-- <a href="#"><img src=" images/app.png"></a> -->
       <!-- <div class="sign_up"><a href="#">Login/SignUp</a></div> -->
@@ -191,12 +189,17 @@
        <a href=""><i class="fa fa-linkedin"></i></a>
        <a href=""><i class="fa fa-telegram"></i></a>
       </div>
-      <h3>Project X</h3>
-      <p class="quote">Making Investments Sound</p>
-      <p class="rights">Copyright@2017. All Rights Reserved By Project <span>X</span> </p>
+      <h3>Lattice Protocol</h3>
+      <p class="rights">Copyright@2018. All Rights Reserved By Lattice Protocol Engg. Ltd</p>
+      
     </footer>
   <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script src=" {% static 'js/app.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script>
+        function open_pdf(){
+            location.href = '{% static "assets/LatticeProtocolV1.0.pdf" %}';
+        }
+    </script>
   </body>
   </html>

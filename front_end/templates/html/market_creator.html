@@ -1,0 +1,143 @@
+{% extends 'html/base.html' %}
+{% block content %}
+{% load staticfiles %}
+
+
+    <div class="container">
+
+        <div class="market_place_title">
+            MarketPlace Creator
+        </div>
+
+    <div class="row">
+          
+          <div class="col-md-2"></div>
+          
+          <div class="col-md-8">
+              
+              <form>
+                  <div class="form-group">
+                    <label for="marketPlaceNameId">MarketPlace Name</label>
+                    <input type="text" class="form-control" id="marketPlaceNameId" placeholder="MarketPlace Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="marketPlaceDescriptionId">MarketPlace Description</label>
+                    <textarea class="form-control" rows="5" type="text" id="marketPlaceDescriptionId" placeholder="MarketPlace Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                    <label for="marketPlaceJSONSchemaId">MarketPlace FrontEnd Schema</label>
+                    <textarea class="form-control" rows="5" type="text" id="marketPlaceJSONSchemaId" placeholder="Enter your JSON schema for frontend styling"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Listing Type on dApp</label>
+                        <select class="form-control">
+                          <option>Plain Listing</option>
+                          <option>Digital Token Listing</option>
+                          <option>Service Based Listing</option>
+                          <option>4</option>
+                          <option>5</option>
+                        </select>
+                    </div>
+                  <div class="form-group">
+                    <label for="marketPlaceLogoId">MarketPlace Logo</label>
+                    <input type="file" id="marketPlaceLogoId">
+                    <p class="help-block">Example block-level help text here.</p>
+                  </div>
+                  
+                  <div class="checkbox">
+                      <label>
+                        <input type="checkbox" value="">
+                            Enable Cross Lattice Collaboration between Sellers
+                      </label>
+                    </div>
+                    
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" value="">
+                            Enable referrals
+                      </label>
+                    </div>
+                    
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" value="">
+                            Enable Seller onboarding
+                      </label>
+                    </div>
+                    
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" value="">
+                            Enable Cross Lattice Collaboration between business(if seller onbording is not enabled)
+                      </label>
+                    </div>
+  
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  
+            </form>
+              
+          </div>
+          
+          <div class="col-md-2"></div>
+          
+    </div>
+        
+        
+    </div>
+    
+    <script src="https://unpkg.com/bigchaindb-driver@0.3.0/dist/browser/bigchaindb-driver.window.min.js"></script>
+    
+    <script>
+        
+        //need to insert data inside ipdb, using side chain to do everything
+        
+        var bdb = new BigchainDB.Connection('https://test.bigchaindb.com/api/v1/', { 
+                                            app_id: '3297421f',
+                                            app_key: 'b773ae2400fcd8bf1ce7517b7f22e149'
+                });
+                
+        
+        
+        
+        function throwToDb(){
+            
+            
+            //create KeyPair
+        const user = new BigchainDB.Ed25519Keypair();
+        
+        const assetdata = {
+            'bicycle': {
+                'serial_number': 'abcd1234',
+                'manufacturer': 'Bicycle Inc.',
+            }
+        };
+        
+        const metadata = {'planet' : 'earth'};
+        
+        //asset creation and send it to db
+        const txCreateAliceSimple = BigchainDB.Transaction.makeCreateTransaction(
+        assetdata,
+        metadata,
+
+        // A transaction needs an output
+        [ BigchainDB.Transaction.makeOutput(
+                BigchainDB.Transaction.makeEd25519Condition(user.publicKey))
+        ],
+        user.publicKey
+        );
+        
+        var txCreateAliceSimpleSigned = BigchainDB.Transaction.signTransaction(txCreateAliceSimple, user.privateKey)
+        
+        bdb.postTransaction(txCreateAliceSimpleSigned)
+            .then(res => {
+                console.log(res)
+            })
+        
+            
+        }
+        
+        
+    </script>
+
+
+{% endblock %}

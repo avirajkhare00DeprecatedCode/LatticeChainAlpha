@@ -1,0 +1,266 @@
+{% extends 'html/base.html' %}
+{% block content %}
+{% load staticfiles %}
+
+    <div class="container-fluid">
+        
+        <div class="market_place_title">
+            Ebook MarketPlace
+        </div>
+        
+        <div class="pageNavbars">
+            <!-- Centered Pills -->
+            <ul class="nav nav-pills nav-justified">
+                <li id="buyPill" class="active"><a href="#">Buy</a></li>
+                <li id="sellPill"><a href="#">Sell</a></li>
+            </ul>
+        </div>
+        
+        <div id="marketplace_content">
+            <div id="itemShow" class="row"></div>
+        </div>
+        
+    </div>
+    
+    <script type="text/javascript">
+    
+        var csrf_token = $("{% csrf_token %}").attr('value');
+    
+        var applicationcontractContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"getAssetAddressLength","outputs":[{"name":"_index","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getTokenizerAddress","outputs":[{"name":"_tokenizerAddress","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"killApplication","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTokenizerAddressLength","outputs":[{"name":"_index","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getLattice","outputs":[{"name":"_latticeAddress","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_ipfsInfoHash","type":"string"},{"name":"_ipfsFileHash","type":"string"},{"name":"_assetPrice","type":"uint256"}],"name":"tokenizeAsset","outputs":[{"name":"_assetAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getAsset","outputs":[{"name":"_assetAddress","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getLatticeLength","outputs":[{"name":"_index","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_applicationCreatorAddress","type":"address"},{"name":"_ownerAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]);
+        var assettokencontractContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"_latticeContractAddress","type":"address"}],"name":"updateLatticeContractAddress","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTradePrice","outputs":[{"name":"_value","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTokenOwner","outputs":[{"name":"_ownerAddress","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"tradeToken","outputs":[{"name":"","type":"bool"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"_value","type":"uint256"}],"name":"pushLatticeAddress","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getIpfsInfo","outputs":[{"name":"_ipfsHashInfo","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_buyer","type":"address"},{"name":"_value","type":"uint256"}],"name":"tradeTokenFromLattice","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getIpfs","outputs":[{"name":"_ipfsHash","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_ipfsHash","type":"string"},{"name":"_ipfsHashInfo","type":"string"},{"name":"_contractCreator","type":"address"},{"name":"_tokenOwner","type":"address"},{"name":"_assetPrice","type":"uint256"},{"name":"_index","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]);
+        var bookstoreMarketplaceAddress = "0xf8cc5a95b06e3535498c58f51f4eef845a826243";
+        
+        
+        $('#marketplace_content').on('click', function(e){
+            
+            if(e.target.id == 'tokenizeButton'){
+                
+                //prepare a post request
+                console.log('clicked tokenize button');
+            
+                var formdata = new FormData();
+            
+                formdata.append('userAddress', web3.eth.accounts[0]);
+                formdata.append('csrfmiddlewaretoken', csrf_token);
+                formdata.append('ipfsInfo', $('#ipfsInfo').val());
+                formdata.append('ipfsFile', $('input[type=file]')[0].files[0]);
+            
+                $.ajax({
+                    url : '../../api/v1/post_ipfs_file/',
+                    method : 'post',
+                    processData: false,
+                    contentType: false,
+                    data : formdata
+                }).done(function(data){
+                    console.log(data);
+                
+                    //from here call smart contracts functions and send both hashes to contract
+                    applicationcontractContract.at(bookstoreMarketplaceAddress).tokenizeAsset(data[1], data[0], web3.toWei($('#etherTradeValue').val()), function(err, data){
+                        if(err){
+                            console.error(err);
+                        }else{
+                            alert(data);
+                        }
+                    });//tokenize function
+                });//done function
+            } //if condition
+        });//click event
+        
+        
+        
+        //page wont refresh, all the tasks to do using jquery
+        $('#sellPill').click(function(){
+            $('#sellPill').addClass('active');
+            $('#buyPill').removeClass('active');
+            
+            //give all function actions here
+            $('#marketplace_content').empty();
+            $('#marketplace_content').append(tokenizeAssetDOM);
+            $('#marketplace_content').append(yourTokensDOM);
+            $('#marketplace_content').append(latticeTokenizeDOM);
+            
+        });
+        
+        $('#buyPill').click(function(){
+            $('#sellPill').removeClass('active');
+            $('#buyPill').addClass('active');
+            
+            //give all function actions here
+            $('#marketplace_content').empty();
+            $('#marketplace_content').append('<div id="itemShow" class="row"></div>');
+            //$('#itemShow').append(itemThumbnailDOM);
+        });
+        
+        var tokenizeAssetDOM = '<div class="panel panel-default">' +
+          '<div class="panel-heading">' +
+            '<h3 class="panel-title">Tokenize your Asset</h3>' +
+          '</div>' +
+          '<div class="panel-body">' +
+            '<form id="tokenizedForm" class="form-horizontal">' +
+                
+                '<div class="form-group col-md-7">' +
+                    '<label for="ipfsInfo">About this file</label>' +
+                    '<textarea name="ipfsInfoName" class="form-control" id="ipfsInfo" rows="5"></textarea>' +
+                '</div>' +
+                
+                '<div class="form-group col-md-7">' +
+                    '<label for="etherTradeValue">Price(ETH)</label>' +
+                    '<input name="etherTradeValueName" class="form-control" id="etherTradeValue" />' +
+                '</div>' +
+
+                '<div class="form-group col-md-7">' +
+                    '<label for="exampleInputFile">Select File</label>' +
+                    '<input name="ipfsFileName" type="file" class="form-control-file" id="ipfsFile" aria-describedby="fileHelp">' +
+                    '<small id="fileHelp" class="form-text text-muted">Choose one file to send</small>' +
+                '</div>' +
+                
+                '<div class="form-group col-md-7">' +
+
+                    '<button id="tokenizeButton" type="button" class="btn btn-primary">Submit</button>' +
+                '</div>' +
+                
+            '</form>' +
+          '</div>' +
+        '</div>';
+        
+        var yourTokensDOM = '<div class="panel panel-default">' +
+                                '<div class="panel-heading">' +
+                                    '<h3 class="panel-title">Your Tokenized Assets</h3>' +
+                                '</div>' +
+                                '<div class="panel-body">' +
+                                '</div>' +
+                            '</div>';
+                            
+        var latticeTokenizeDOM = '<div class="panel panel-default">' +
+                                '<div class="panel-heading">' +
+                                    '<h3 class="panel-title">Lattice Creator</h3>' +
+                                '</div>' +
+                                '<div class="panel-body">' +
+                                    '<form id="latticeForm" class="form-horizontal">' +
+                
+                                        '<div class="form-group col-md-7">' +
+                                            '<label for="ipfsInfo">About this file</label>' +
+                                            '<textarea name="ipfsInfoName" class="form-control" id="latticeIpfsInfo" rows="5"></textarea>' +
+                                        '</div>' +
+                
+                                        '<div class="form-group col-md-7">' +
+                                            '<label for="etherTradeValue">Price(ETH)</label>' +
+                                            '<input name="etherTradeValueName" class="form-control" id="latticeEtherTradeValue" />' +
+                                        '</div>' +
+
+                                        '<div class="form-group col-md-7">' +
+                                            '<label for="AssetAddresses">Tokenized Asset Addresses</label>' +
+                                            '<input name="AssetAddressesName" class="form-control" id="AssetAddressesValue" />' +
+                                        '</div>' +
+                
+                                        '<div class="form-group col-md-7">' +
+
+                                            '<button id="createLatticeButton" type="button" class="btn btn-primary">Submit</button>' +
+                                        
+                                        '</div>' +
+                                    '</form>' +
+                                '</div>' +
+                            '</div>';
+                            
+                            
+        var itemThumbnailDOM = '<div class="col-sm-6 col-md-4">' +
+                                '<div class="thumbnail">' +
+                                    '<img src="">' +
+                                    '<div class="caption">' +
+                                    '<h3>Thumbnail label</h3>' +
+                                    '<p>Description of item</p>' +
+                                    '<p><a href="#" class="btn btn-primary" role="button">Info</a> <a href="#" class="btn btn-default" role="button">Buy</a></p>' +
+                                '</div>' +
+                            '</div>';
+                            
+                            
+        (function(){
+            applicationcontractContract.at(bookstoreMarketplaceAddress).getAssetAddressLength(function(err, data){
+                
+                //get number of assets and then loop through all the assets
+                if(err){
+                    console.error(err);
+                }else{
+                    var totalAssets = data.c[0];
+                    
+                    //console.log(totalAssets);
+                    
+                    //here we will append that much thumbnails to show data
+                    
+                    for(var i=0; i<totalAssets; i++){
+                        applicationcontractContract.at(bookstoreMarketplaceAddress).getAsset(i, function(err, data){
+                            if(err){
+                                console.error(err)
+                            }else{
+                                //console.log(data);
+                                //create a new function at this stage to 
+                                $('#itemShow').append(
+                                    
+                                    '<div class="col-sm-6 col-md-4" ' + 'id="' + data + '">' +
+                                        '<div class="thumbnail">' +
+                                            '<img src="">' +
+                                            '<div class="caption">' +
+                                                '<h3><span id="caption-' + data + '"></span>' + '</h3>' +
+                                                '<p><span id="description-' + data + '"></span>' + '</p>' +
+                                                '<p><a ' + 'id="buy-' + data + '" ' + 'href="#" class="btn btn-default" role="button">Buy</a></p>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>'
+                                )
+                                
+                                getAssetHash(data);
+                                
+                            }
+                        })
+                    }
+                }
+            })
+        })()
+        
+        //this function is used to get ipfs hash from smart contract
+        function getAssetHash(assetAddress){
+            assettokencontractContract.at(assetAddress).getIpfsInfo(function(err, data){
+                if(err){
+                    console.error(err);
+                }else{
+                    //console.log(data);
+                    getIpfsInfo(assetAddress, data);
+                    
+                    //var ipfsInfoJson = JSON.parse(getIpfsInfo(data));
+                    //$('#caption-' + assetAddress).text(ipfsInfoJson.assetName);
+                    //$('#description-' + assetAddress).text(ipfsInfoJson.assetDescription);
+                }
+            })
+        }
+        
+        //this function is used to fetch from ipfs
+        function getIpfsInfo(assetAddress, ipfsHash){
+            var ipfsGatewayAPI = 'https://ipfs.io/ipfs/';
+            fetch(ipfsGatewayAPI + ipfsHash)
+            .then(function(data){
+                return data.text()
+            })
+            .then(function(data){
+                console.log(data);
+                
+                //appending data at this stage
+                var ipfsInfoJson = JSON.parse(data);
+                $('#caption-' + assetAddress).text(ipfsInfoJson.assetName);
+                $('#description-' + assetAddress).text(ipfsInfoJson.assetDescription);
+                
+            })
+        }
+        
+        function createDOMByLength(totalAssets){
+            //DOM will be appended to screen first with distinct ids so that when data is completely fetched.
+            //data will keep on appending asynchronously
+            for(var i=0; i<totalAssets; i++){
+                
+                //create DOM with their ids
+                $('#itemShow').append(itemThumbnailDOM);
+            }
+        }
+        
+    </script>
+
+{% endblock %}

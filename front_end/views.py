@@ -125,21 +125,41 @@ class BuyDigitalizedAssetsView(APIView):
             return render(request, 'html/buy_digitalized_assets.html')
             
             
-class MobilePhoneMarketPlaceView(APIView):
+class BookStoreMarketPlaceView(APIView):
     
     def get(self, request):
         
         if request.user.is_authenticated:
             
-            return render(request, 'html/mobilephone_marketplace.html')
+            return render(request, 'html/bookstore_marketplace.html')
             
-class InsuranceMarketPlaceView(APIView):
+        else:
+            
+            return redirect('../../login/')
+            
+class MusicMarketPlaceView(APIView):
     
     def get(self, request):
         
         if request.user.is_authenticated:
             
-            return render(request, 'html/insurance_marketplace.html')
+            return render(request, 'html/music_marketplace.html')
+            
+        else:
+            
+            return redirect('../../login/')
+            
+class MarketCreator(APIView):
+    
+    def get(self, request):
+        
+        if request.user.is_authenticated:
+            
+            return render(request, 'html/market_creator.html')
+            
+        else:
+            
+            return redirect('../../login/')
 
 
 #Put all api classes inside api_calls file

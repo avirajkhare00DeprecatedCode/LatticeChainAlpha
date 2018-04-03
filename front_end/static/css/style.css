@@ -180,7 +180,7 @@ a{
 .title{
   font-style: initial;
   color: white;
-  text-decoration: underline;-
+  text-decoration: underline;
 }
 #dashboard a{
 	background: #36486b;
@@ -208,9 +208,9 @@ a{
 	letter-spacing: 1;
 	width: 300px;
     border-radius: 8px;
-     background-clip:padding-box;
-     margin-right: 25px;
-     /*box-shadow: 0 0 10px black;*/
+    background-clip:padding-box;
+    /*margin-right: 25px;*/
+    /*box-shadow: 0 0 10px black;*/
 }
 
 #dashboard{
@@ -221,9 +221,24 @@ a{
 	margin-top: 30px;
 	font-size: 22px;
 }
+
 #dashboard .col-left{
 	margin-left: 40px;
 }
+
+.dashboardColumn p {
+	
+	font-size: 22px;
+	text-align: justify;
+	
+}
+
+#aboutLatticeParagraph {
+	
+	text-align: justify;
+	
+}
+
 .work h3{
 	margin-bottom: 40px;
 	font-size: 30px;
